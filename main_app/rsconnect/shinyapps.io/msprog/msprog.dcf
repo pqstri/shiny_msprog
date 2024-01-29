@@ -1,0 +1,12 @@
+name: msprog
+title: msprog
+username: msprog
+account: msprog
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 11058350
+bundleId: 8193980
+url: https://msprog.shinyapps.io/msprog/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
