@@ -32,6 +32,8 @@ fluidPage(
   sidebarLayout(
     
     sidebarPanel(width = 7,
+                 
+      useShinyjs(),
         
       # Import outcome data ----------------------------------------------------
       div(style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
@@ -185,62 +187,74 @@ fluidPage(
           
       ),
 
-      numericInput(
-        "require_sust_weeks",
-        "Minimum number of weeks for which a confirmed change must be sustained to be retained as an event.",
-        min = 0,
-        max = 53,
-        value = 0,
-        step = 1
-      ),
+      # Other ------------------------------------------------------------------
+      hidden(
+        div(id = 'advancedbox', style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
+          numericInput(
+            "require_sust_weeks",
+            "Minimum number of weeks for which a confirmed change must be sustained to be retained as an event.",
+            min = 0,
+            max = 53,
+            value = 0,
+            step = 1
+          ),
+          
+          numericInput(
+            "relapse_to_bl",
+            "Minimum distance from last relapse (days) for a visit to be used as baseline (otherwise the next available visit is used as baseline).",
+            min = 0,
+            max = 365,
+            value = 30,
+            step = 30
+          ),
+          
+          numericInput(
+            "relapse_to_event",
+            "Minimum distance from last relapse (days) for an event to be considered as such.",
+            min = 0,
+            max = 365,
+            value = 0,
+            step = 30
+          ),
+          
+          numericInput(
+            "relapse_to_conf",
+            "Minimum distance from last relapse (days) for a visit to be a valid confirmation visit.",
+            min = 0,
+            max = 365,
+            value = 30,
+            step = 30
+          ),
+          
+          numericInput(
+            "relapse_assoc",
+            "Maximum distance from last relapse (days) for a progression event to be considered as RAW.",
+            min = 0,
+            max = 365,
+            value = 90,
+            step = 30
+          ),
+          
+          selectInput(
+            "subjects",
+            "Subset of subjects to include",
+            choices = c("Include all")
+          ),
+          
+          numericInput(
+            "min_value",
+            "Outcome theshold above which consider progressions events",
+            value = 0
+          ),
+      )),
       
-      numericInput(
-        "relapse_to_bl",
-        "Minimum distance from last relapse (days) for a visit to be used as baseline (otherwise the next available visit is used as baseline).",
-        min = 0,
-        max = 365,
-        value = 30,
-        step = 30
-      ),
+      div(style = "text-align: center;",
+        actionButton(inputId = "advenced_button_on", label = "Advanced setting"),
+        hidden(
+          actionButton(inputId = "advenced_button_off", label = "Close advanced setting")
+        )
+      )
       
-      numericInput(
-        "relapse_to_event",
-        "Minimum distance from last relapse (days) for an event to be considered as such.",
-        min = 0,
-        max = 365,
-        value = 0,
-        step = 30
-      ),
-      
-      numericInput(
-        "relapse_to_conf",
-        "Minimum distance from last relapse (days) for a visit to be a valid confirmation visit.",
-        min = 0,
-        max = 365,
-        value = 30,
-        step = 30
-      ),
-      
-      numericInput(
-        "relapse_assoc",
-        "Maximum distance from last relapse (days) for a progression event to be considered as RAW.",
-        min = 0,
-        max = 365,
-        value = 90,
-        step = 30
-      ),
-      
-      selectInput(
-        "subjects",
-        "Subset of subjects to include",
-        choices = c("Include all")
-      ),
-      
-      numericInput(
-        "min_value",
-        "Outcome theshold above which consider progressions events",
-        value = 0
-      ),
       
       # Calcola bottone
     ),
