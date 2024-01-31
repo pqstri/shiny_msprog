@@ -262,6 +262,7 @@ fluidPage(
     
     # Show a plot of the generated distribution
     mainPanel(width = 4,
+      disabled(actionButton(inputId = "run_msprog", label = "Compute")),
       tableOutput("inputTab"),
       tableOutput("relapseTab"),
       tableOutput("outputTab_details"),
