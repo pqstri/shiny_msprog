@@ -34,7 +34,7 @@ fluidPage(
     sidebarPanel(width = 7,
         
       # Import outcome data ----------------------------------------------------
-      div(style = "margin:10px; border:1px solid #d0d6d1; padding:20px; border-radius: 5px;",
+      div(style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
           
         # File
         h4("Import outcome data*"),
@@ -62,7 +62,7 @@ fluidPage(
       
       # Import relapse data ----------------------------------------------------
       # File
-      div(style = "margin:10px; border:1px solid #d0d6d1; padding:20px; border-radius: 5px;",
+      div(style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
         h4("Import relapse data (optional)"),
         HTML("Choose or drag and drop here a <b>CSV file</b> with the dates of 
            relapses (<a href=''>read more</a>). 
@@ -84,16 +84,15 @@ fluidPage(
       ),
       
       # Outcome ----------------------------------------------------------------
-      div(style = "margin:10px; border:1px solid #d0d6d1; padding:20px; border-radius: 5px;",
+      div(style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
         h4("Outcome definition*"),
         HTML("Specify the outcome type. This selection is associated to a
               minimum delta corresponding to a valid change from the provided 
-              baseline value (<a href=''>more options</a>). 
-              <br>
-              <i>[pick one of the options]</i>"),
+              baseline value (<a href=''>more options</a>).<br>"),
+        HTML("<br>"),
         radioButtons(
           inputId = "outcome",
-          label = "",
+          label = "Pick one of the options",
           choices = c(
             "Expanded Disability Status Scale (EDSS)" = "edss", 
             "Nine-Hole Peg Test (NHPT)" = "nhpt", 
@@ -105,14 +104,13 @@ fluidPage(
       ),
       
       # Event ------------------------------------------------------------------
-      div(style = "margin:10px; border:1px solid #d0d6d1; padding:20px; border-radius: 5px;",
-          h4("Event definition*"),
-        HTML("Specify the event of interest. 
-              <br>
-              <i>[pick one of the options]</i>"),
+      div(style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
+          h4("Event definition"),
+        HTML("Specify the event setting of interest.<br>"),
+        HTML("<br>"),
         radioButtons(
           inputId = "event",
-          label = "",
+          label = "Pick one of the options",
           choices = c(
             "First progression" = "firstprog",
             "First relapse-associated worsening (RAW)" = "firstRAW",
@@ -125,6 +123,28 @@ fluidPage(
           selected = NA
         )
       ),
+      
+      # Baseline ---------------------------------------------------------------
+      div(style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
+          h4("Baseline definition"),
+          HTML("Specify a baseline scheme. <br>
+                <i>Note: to discard fluctuations around baseline for a 
+              first-progression setting, the second option is more suitable, while 
+              for a multiple-event setting the third option is more suitable.</i><br>"),
+          HTML("<br>"),
+          radioButtons(
+            inputId = "event",
+            label = "Pick one of the options",
+            choices = c(
+              "First valid outcome value" = "fixed",
+              "Updated every time the value is lower than the previous 
+              measure and confirmed at the following visit" = "roving_impr",
+              "Updated after each event to last valid confirmed outcome value" = "roving"
+            ),
+            selected = NA
+          )
+      ),
+      
       
       sliderInput(
         "conf_weeks",
@@ -193,12 +213,6 @@ fluidPage(
         max = 365,
         value = 90,
         step = 30
-      ),
-      
-      selectInput(
-        "baseline",
-        "Specifies the baseline scheme.",
-        choices = c("fixed", "roving_impr", "roving")
       ),
       
       selectInput(
