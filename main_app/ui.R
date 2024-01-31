@@ -34,83 +34,97 @@ fluidPage(
     sidebarPanel(width = 7,
         
       # Import outcome data ----------------------------------------------------
-      # File
-      h4("Import outcome data*"),
-      HTML("Choose or drag and drop here a <b>CSV file</b> with longitudinal 
-        assessments of an outcome measure (e.g., EDSS) for one or more
-        patients (<a href=''>read more</a>).
-        <br>
-        <i>Note: the outcome file should contain at least the following columns: 
-        individual subject identifier, outcome values, and date of visits.</i>"),
-      fileInput(inputId = "dat", label = "", multiple = FALSE, accept = ".csv"),
-      
-      # Columns
-      HTML("Specify the column names corresponding in your outcome file to the required columns.<br>"),
-      HTML("<br>"),
-      div(style="display: inline-block;vertical-align:top; width: 32%;",
-        selectInput(inputId = "subj_col", label = "Subject ID", choices = c(""))
+      div(style = "margin:10px; border:1px solid #d0d6d1; padding:20px; border-radius: 5px;",
+          
+        # File
+        h4("Import outcome data*"),
+        HTML("Choose or drag and drop here a <b>CSV file</b> with longitudinal 
+          assessments of an outcome measure (e.g., EDSS) for one or more
+          patients (<a href=''>read more</a>).
+          <br>
+          <i>Note: the outcome file should contain at least the following columns: 
+          individual subject identifier, outcome values, and date of visits.</i>"),
+        fileInput(inputId = "dat", label = "", multiple = FALSE, accept = ".csv"),
+        
+        # Columns
+        HTML("Specify the column names corresponding in your outcome file to the required columns.<br>"),
+        HTML("<br>"),
+        div(style="display: inline-block;vertical-align:top; width: 32%;",
+          selectInput(inputId = "subj_col", label = "Subject ID", choices = c(""))
+          ),
+        div(style="display: inline-block;vertical-align:top; width: 32%;",
+          selectInput(inputId = "value_col", label = "Outcome value", choices = c(""))
         ),
-      div(style="display: inline-block;vertical-align:top; width: 32%;",
-        selectInput(inputId = "value_col", label = "Outcome value", choices = c(""))
+        div(style="display: inline-block;vertical-align:top; width: 32%;",
+          selectInput(inputId = "date_col", label = "Date of visit", choices = c(""))
+        )
       ),
-      div(style="display: inline-block;vertical-align:top; width: 32%;",
-        selectInput(inputId = "date_col", label = "Date of visit", choices = c(""))
-      ),
-      HTML("<hr>"),
       
       # Import relapse data ----------------------------------------------------
       # File
-      h4("Import relapse data (optional)"),
-      HTML("Choose or drag and drop here a <b>CSV file</b> with the dates of 
-         relapses (<a href=''>read more</a>). 
-         <br>
-         <i>Note: the relapse file should contain at least the following columns: 
-         individual subject identifier, date of relapse.</i>"),
-      fileInput(inputId = "relapse.dat", label = "", 
-                multiple = FALSE, accept = c(".csv")),
-      
-      # Columns
-      HTML("Specify the column names corresponding in your relapse file to the required columns.<br>"),
-      HTML("<br>"),
-      div(style="display: inline-block;vertical-align:top; width: 49.4%;",
-          selectInput(inputId = "rsubj_col", label = "Subject ID", choices = c(""))
+      div(style = "margin:10px; border:1px solid #d0d6d1; padding:20px; border-radius: 5px;",
+        h4("Import relapse data (optional)"),
+        HTML("Choose or drag and drop here a <b>CSV file</b> with the dates of 
+           relapses (<a href=''>read more</a>). 
+           <br>
+           <i>Note: the relapse file should contain at least the following columns: 
+           individual subject identifier, date of relapse.</i>"),
+        fileInput(inputId = "relapse.dat", label = "", 
+                  multiple = FALSE, accept = c(".csv")),
+        
+        # Columns
+        HTML("Specify the column names corresponding in your relapse file to the required columns.<br>"),
+        HTML("<br>"),
+        div(style="display: inline-block;vertical-align:top; width: 49.4%;",
+            selectInput(inputId = "rsubj_col", label = "Subject ID", choices = c(""))
+        ),
+        div(style="display: inline-block;vertical-align:top; width: 49.4%;",
+            selectInput(inputId = "rdate_col", label = "Date of visit", choices = c(""))
+        )
       ),
-      div(style="display: inline-block;vertical-align:top; width: 49.4%;",
-          selectInput(inputId = "rdate_col", label = "Date of visit", choices = c(""))
-      ),
-      HTML("<hr>"),
       
       # Outcome ----------------------------------------------------------------
-      h4("Outcome definition*"),
-      HTML("Specify the outcome type. This selection is associated to a
-            minimum delta corresponding to a valid change from the provided 
-            baseline value (<a href=''>more options</a>). 
-            <br>
-            <i>[pick one of the options]</i>"),
-      radioButtons(
-        inputId = "outcome",
-        label = "",
-        choices = c(
-          "Expanded Disability Status Scale (EDSS)" = "edss", 
-          "Nine-Hole Peg Test (NHPT)" = "nhpt", 
-          "Timed 25-Foot Walk (T25FW)" = "t25fw",
-          "Symbol Digit Modalities Test (SDMT)" = "sdmt"
-          ),
-        selected = NA
+      div(style = "margin:10px; border:1px solid #d0d6d1; padding:20px; border-radius: 5px;",
+        h4("Outcome definition*"),
+        HTML("Specify the outcome type. This selection is associated to a
+              minimum delta corresponding to a valid change from the provided 
+              baseline value (<a href=''>more options</a>). 
+              <br>
+              <i>[pick one of the options]</i>"),
+        radioButtons(
+          inputId = "outcome",
+          label = "",
+          choices = c(
+            "Expanded Disability Status Scale (EDSS)" = "edss", 
+            "Nine-Hole Peg Test (NHPT)" = "nhpt", 
+            "Timed 25-Foot Walk (T25FW)" = "t25fw",
+            "Symbol Digit Modalities Test (SDMT)" = "sdmt"
+            ),
+          selected = NA
+        )
       ),
-      HTML("<hr>"),
       
-      
-      
-      
-      selectInput(
-        inputId = "event",
-        label = "",
-        multiple = FALSE,
-        choices = c("firstprog", "first", "firsteach", "firstprogtype",
-                    "firstPIRA", "firstRAW", "multiple")
+      # Event ------------------------------------------------------------------
+      div(style = "margin:10px; border:1px solid #d0d6d1; padding:20px; border-radius: 5px;",
+          h4("Event definition*"),
+        HTML("Specify the event of interest. 
+              <br>
+              <i>[pick one of the options]</i>"),
+        radioButtons(
+          inputId = "event",
+          label = "",
+          choices = c(
+            "First progression" = "firstprog",
+            "First relapse-associated worsening (RAW)" = "firstRAW",
+            "First progression independent of relapse activity (PIRA)" = "firstPIRA",
+            "First progression of each kind (PIRA, RAW, and undefined), in chronological order" = "firstprogtype",
+            "First improvement and first progression, in chronological order" = "firsteach",
+            "Only the very first event (improvement or progression)" = "first",
+            "All events, in chronological order" = "multiple"
+            ),
+          selected = NA
+        )
       ),
-
       
       sliderInput(
         "conf_weeks",
