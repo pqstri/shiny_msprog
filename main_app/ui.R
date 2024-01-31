@@ -80,7 +80,37 @@ fluidPage(
       ),
       HTML("<hr>"),
       
-      #
+      # Outcome ----------------------------------------------------------------
+      h4("Outcome definition*"),
+      HTML("Specify the outcome type. This selection is associated to a
+            minimum delta corresponding to a valid change from the provided 
+            baseline value (<a href=''>more options</a>). 
+            <br>
+            <i>[pick one of the options]</i>"),
+      radioButtons(
+        inputId = "outcome",
+        label = "",
+        choices = c(
+          "Expanded Disability Status Scale (EDSS)" = "edss", 
+          "Nine-Hole Peg Test (NHPT)" = "nhpt", 
+          "Timed 25-Foot Walk (T25FW)" = "t25fw",
+          "Symbol Digit Modalities Test (SDMT)" = "sdmt"
+          ),
+        selected = NA
+      ),
+      HTML("<hr>"),
+      
+      
+      
+      
+      selectInput(
+        inputId = "event",
+        label = "",
+        multiple = FALSE,
+        choices = c("firstprog", "first", "firsteach", "firstprogtype",
+                    "firstPIRA", "firstRAW", "multiple")
+      ),
+
       
       sliderInput(
         "conf_weeks",
@@ -152,23 +182,9 @@ fluidPage(
       ),
       
       selectInput(
-        "event",
-        "Specifies which events to detect.",
-        choices = c("firstprog", "first", "firsteach", "firstprogtype",
-                    "firstPIRA", "firstRAW", "multiple")
-      ),
-      
-      selectInput(
         "baseline",
         "Specifies the baseline scheme.",
         choices = c("fixed", "roving_impr", "roving")
-      ),
-      
-      radioButtons(
-        "outcome",
-        "Name of data column with date of visit",
-        choices = c("edss", "nhpt", "t25fw", "sdmt"),
-        selected = NA
       ),
       
       selectInput(
