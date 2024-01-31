@@ -33,28 +33,54 @@ fluidPage(
     
     sidebarPanel(width = 7,
         
-      # Import data
+      # Import outcome data ----------------------------------------------------
+      # File
+      h4("Import outcome data*"),
       HTML("Choose or drag and drop here a <b>CSV file</b> with longitudinal 
         assessments of an outcome measure (e.g., EDSS) for one or more
         patients (<a href=''>read more</a>).
         <br>
-        <i>The file should contain at least the following columns: an 
+        <i>Note: the outcome file should contain at least the following columns: 
         individual subject identifier, outcome values, and date of visits.</i>"),
       fileInput(inputId = "dat", label = "", multiple = FALSE, accept = ".csv"),
       
-      # Specify columns
-      HTML("Specify the column names corresponding in your file to the required columns.<br>"),
+      # Columns
+      HTML("Specify the column names corresponding in your outcome file to the required columns.<br>"),
       HTML("<br>"),
       div(style="display: inline-block;vertical-align:top; width: 32%;",
         selectInput(inputId = "subj_col", label = "Subject ID", choices = c(""))
         ),
       div(style="display: inline-block;vertical-align:top; width: 32%;",
-        selectInput(inputId = "value_col",label = "Outcome value", choices = c(""))
+        selectInput(inputId = "value_col", label = "Outcome value", choices = c(""))
       ),
       div(style="display: inline-block;vertical-align:top; width: 32%;",
         selectInput(inputId = "date_col", label = "Date of visit", choices = c(""))
       ),
+      HTML("<hr>"),
       
+      # Import relapse data ----------------------------------------------------
+      # File
+      h4("Import relapse data (optional)"),
+      HTML("Choose or drag and drop here a <b>CSV file</b> with the dates of 
+         relapses (<a href=''>read more</a>). 
+         <br>
+         <i>Note: the relapse file should contain at least the following columns: 
+         individual subject identifier, date of relapse.</i>"),
+      fileInput(inputId = "relapse.dat", label = "", 
+                multiple = FALSE, accept = c(".csv")),
+      
+      # Columns
+      HTML("Specify the column names corresponding in your relapse file to the required columns.<br>"),
+      HTML("<br>"),
+      div(style="display: inline-block;vertical-align:top; width: 49.4%;",
+          selectInput(inputId = "rsubj_col", label = "Subject ID", choices = c(""))
+      ),
+      div(style="display: inline-block;vertical-align:top; width: 49.4%;",
+          selectInput(inputId = "rdate_col", label = "Date of visit", choices = c(""))
+      ),
+      HTML("<hr>"),
+      
+      #
       
       sliderInput(
         "conf_weeks",
@@ -149,14 +175,6 @@ fluidPage(
         "subjects",
         "Subset of subjects to include",
         choices = c("Include all")
-      ),
-      
-      # aggiungi selezione nomi colonne
-      fileInput(
-        "relapse.dat",
-        "Upload relapse longitudinal data",
-        multiple = FALSE,
-        accept = c(".csv")
       ),
       
       numericInput(
