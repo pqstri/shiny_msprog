@@ -60,6 +60,28 @@ function(input, output, session) {
     )
   })
   
+  observeEvent(input$conf_unbounded_right, {
+    if(input$conf_unbounded_right) {
+      updateSliderInput(
+        session = session, 
+        inputId = 'conf_tol_days',
+        value = c(input$conf_tol_days[1], 60),
+      )
+    }
+  })
+  
+  ## observe the button being pressed
+  observeEvent(input$advenced_button_on, {
+    shinyjs::show(id = "advancedbox")
+    shinyjs::show(id = "advenced_button_off")
+    shinyjs::hide(id = "advenced_button_on")
+  })
+  observeEvent(input$advenced_button_off, {
+    shinyjs::hide(id = "advancedbox")
+    shinyjs::show(id = "advenced_button_on")
+    shinyjs::hide(id = "advenced_button_off")
+  })
+  
   output$inputTab <- renderTable({
     dat()
   })
@@ -85,11 +107,11 @@ function(input, output, session) {
       outcome   = input$outcome,
       subjects = NULL,
       relapse = relapse.dat(),
-      rsubj_col = input$subj_col,
-      rdate_col = input$date_col,
+      rsubj_col = input$rsubj_col,
+      rdate_col = input$rdate_col,
       delta_fun = NULL,
       conf_weeks = input$conf_weeks,
-      conf_tol_days = input$conf_tol_days,
+      conf_tol_days = abs(input$conf_tol_days),
       conf_unbounded_right = FALSE,
       require_sust_weeks = input$require_sust_weeks,
       relapse_to_bl = input$relapse_to_bl,
@@ -106,10 +128,11 @@ function(input, output, session) {
       include_dates = TRUE,
       include_value = TRUE,
       include_stable = TRUE,
-      verbose = 2
+      verbose = 1
     )
   })
   
+  # da far scaricare tutte e due
   output$outputTab_details <- renderTable({
     progs()$result[2]
   })
