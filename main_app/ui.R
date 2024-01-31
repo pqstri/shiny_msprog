@@ -9,63 +9,76 @@ library(shinyjs)
 
 # Define UI for application that draws a histogram
 fluidPage(
+  
   # Application title
   titlePanel(
-    "Compute multiple sclerosis progression from longitudinal data.",
+    title = "MSprog",
     windowTitle = "MSprog"
-  ),
+    ),
+  
+  h3("Compute multiple sclerosis progression from longitudinal data."),
+  HTML("Identify and characterize the progression or improvement events
+        of an outcome measure across the data of one or more subject. 
+        The procedure utilizes repeated assessments 
+        over time and considers the dates of acute episodes. Customize 
+        results by setting qualitative and quantitative options, and
+        enhance reproducibility.<br><br>
+       <i>Please input the required information; mandatory fields are
+       marked with an asterisk (*)</i><br>"),
+  
+  HTML("<br>"),
   
   # Sidebar with a slider input for number of bins
   sidebarLayout(
-    sidebarPanel(
-      fileInput(
-        "dat",
-        "Please choose or drag and drop here a CSV or Excel file.",
-        multiple = FALSE,
-        # c("text/csv", "text/comma-separated-values,text/plain", ".csv", ".xls", ".xlsx"
-        accept = ".csv"
+    
+    sidebarPanel(width = 7,
+        
+      # Import data
+      HTML("Choose or drag and drop here a <b>CSV file</b> with longitudinal 
+        assessments of an outcome measure (e.g., EDSS) for one or more
+        patients (<a href=''>read more</a>).
+        <br>
+        <i>The file should contain at least the following columns: an 
+        individual subject identifier, outcome values, and date of visits.</i>"),
+      fileInput(inputId = "dat", label = "", multiple = FALSE, accept = ".csv"),
+      
+      # Specify columns
+      HTML("Specify the column names corresponding in your file to the required columns.<br>"),
+      HTML("<br>"),
+      div(style="display: inline-block;vertical-align:top; width: 32%;",
+        selectInput(inputId = "subj_col", label = "Subject ID", choices = c(""))
+        ),
+      div(style="display: inline-block;vertical-align:top; width: 32%;",
+        selectInput(inputId = "value_col",label = "Outcome value", choices = c(""))
       ),
+      div(style="display: inline-block;vertical-align:top; width: 32%;",
+        selectInput(inputId = "date_col", label = "Date of visit", choices = c(""))
+      ),
+      
       
       sliderInput(
         "conf_weeks",
         "Period before confirmation (weeks):",
-        min = 1,
-        max = 53,
+        min = 0,
+        max = 96,
         value = 12,
         step = 1
       ),
       
-      numericInput(
-        "conf_tol_days",
-        "Tolerance window for confirmation visit (days); can be an integer (same tolerance on left and right) or list-like of length 2 (different tolerance on left and right). In all cases, the right end of the interval is ignored if conf_unbounded_right is set to TRUE.",
-        min = 0,
-        max = 365,
-        value = 30,
-        step = 7
-      ),
       
-      selectInput("subj_col",
-                  "Name of data column with subject ID",
-                  choices = c("")),
-      
-      selectInput(
-        "value_col",
-        "Name of data column with outcome value",
-        choices = c("")
-      ),
-      
-      selectInput("date_col",
-                  "Name of data column with date of visit",
-                  choices = c("")),
-      
+      # aggiusta il meno
       sliderInput(
         "conf_tol_days",
-        "Tolerance window for confirmation visit (days) 
-        [the right end of the interval is included]",
+        "Tolerance window for confirmation visit (days)",
         min = -60,
         max = 60,
         value = c(-30, 30)
       ),
+      
+      # aggiusta label
+      # sposta conf_tol_days dx 
+      checkboxInput("conf_unbounded_right",
+                    'Do you want the confirmation window to be unbounded on the right? (e.g., "confirmed at 12 weeks or more")'),
       
       numericInput(
         "require_sust_weeks",
@@ -138,6 +151,7 @@ fluidPage(
         choices = c("Include all")
       ),
       
+      # aggiungi selezione nomi colonne
       fileInput(
         "relapse.dat",
         "Upload relapse longitudinal data",
@@ -150,11 +164,13 @@ fluidPage(
         "Outcome theshold above which consider progressions events",
         value = 0
       ),
+      
+      # Calcola bottone
     ),
     
     
     # Show a plot of the generated distribution
-    mainPanel(
+    mainPanel(width = 4,
       tableOutput("inputTab"),
       tableOutput("relapseTab"),
       tableOutput("outputTab_details"),
