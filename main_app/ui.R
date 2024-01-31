@@ -86,7 +86,8 @@ fluidPage(
       # Outcome ----------------------------------------------------------------
       div(style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
         h4("Outcome definition*"),
-        HTML("Specify the outcome type. This selection is associated to a
+        HTML("Specify the outcome type.
+             <br>This selection is associated to a
               minimum delta corresponding to a valid change from the provided 
               baseline value (<a href=''>more options</a>).<br>"),
         HTML("<br>"),
@@ -145,31 +146,45 @@ fluidPage(
           )
       ),
       
-      
-      sliderInput(
-        "conf_weeks",
-        "Period before confirmation (weeks):",
-        min = 0,
-        max = 96,
-        value = 12,
-        step = 1
+      # Confirmation -----------------------------------------------------------
+      div(style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
+          h4("Confirmation definition"),
+          HTML("Confirmation is defined as an 
+               event assessed within a specific time interval from the event onset.
+               <br><i>Note: higer intervals improve the stability of event
+               detection but is likely to decrease their number.</i><br>"),
+          HTML("<br>"),
+          HTML("<hr>"),
+          sliderInput(
+            inputId = "conf_weeks",
+            label = "Specify the confirmation interval",
+            min = 0,
+            max = 96,
+            value = 12,
+            step = 1,
+            post = " weeks"
+          ),
+          HTML("<hr>"),
+          sliderInput(
+            inputId = "conf_tol_days",
+            label = "Specify the tolerance window for the confirmation interval",
+            min = -60,
+            max = 60,
+            value = c(-30, 30),
+            post = " days"
+          ),
+          HTML("<hr>"),
+          # sposta conf_tol_days dx 
+          radioButtons(
+            inputId = "conf_unbounded_right",
+            label = 'Do you want the confirmation window to be unbounded on 
+            the right? (e.g., "confirmed at 12 weeks or more")',
+            choices = c("Yes" = T, "No" = F),
+            selected = NA
+            ),
+          
       ),
-      
-      
-      # aggiusta il meno
-      sliderInput(
-        "conf_tol_days",
-        "Tolerance window for confirmation visit (days)",
-        min = -60,
-        max = 60,
-        value = c(-30, 30)
-      ),
-      
-      # aggiusta label
-      # sposta conf_tol_days dx 
-      checkboxInput("conf_unbounded_right",
-                    'Do you want the confirmation window to be unbounded on the right? (e.g., "confirmed at 12 weeks or more")'),
-      
+
       numericInput(
         "require_sust_weeks",
         "Minimum number of weeks for which a confirmed change must be sustained to be retained as an event.",
