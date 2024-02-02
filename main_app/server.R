@@ -60,6 +60,20 @@ function(input, output, session) {
     )
   })
   
+  observeEvent(input$relapse.dat, {
+    updateSelectInput(
+      session = session, 
+      inputId = 'rsubj_col', 
+      choices  = c("", names(relapse.dat()))
+    )
+    
+    updateSelectInput(
+      session = session, 
+      inputId = 'rdate_col', 
+      choices  = c("", names(relapse.dat()))
+    )
+  })
+  
   observeEvent(input$conf_unbounded_right, {
     if(input$conf_unbounded_right) {
       updateSliderInput(
