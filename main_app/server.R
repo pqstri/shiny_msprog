@@ -112,6 +112,7 @@ function(input, output, session) {
     req(input$value_col)
     req(input$date_col)
     req(input$outcome)
+    req(input$event)
     
     capture.msprog(
       data = dat(),
@@ -133,7 +134,7 @@ function(input, output, session) {
       relapse_to_conf = input$relapse_to_conf,
       relapse_assoc = input$relapse_assoc,
       event = input$event,
-      baseline = input$baseline,
+      baseline = ifelse(is.null(input$baseline), "fixed", input$baseline),
       relapse_indep = NULL,
       sub_threshold = FALSE,
       relapse_rebl = FALSE,
