@@ -136,7 +136,7 @@ fluidPage(
               for a multiple-event setting the third option is more suitable.</i><br>"),
           HTML("<br>"),
           radioButtons(
-            inputId = "event",
+            inputId = "baseline",
             label = "Pick one of the options",
             choices = c(
               "First valid outcome value" = "fixed",
