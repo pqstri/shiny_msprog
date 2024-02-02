@@ -28,7 +28,7 @@ function(input, output, session) {
   })
   
   relapse.dat <- reactive({
-    req(input$relapse.dat)
+    if(is.null(input$relapse.dat)) return(NULL)
     if (!endsWith(input$relapse.dat$name, ".csv")) {
       validate("Invalid file; Please upload a .csv")
     }
@@ -104,6 +104,16 @@ function(input, output, session) {
     relapse.dat()
   })
   
+  rsubj_col <- reactive({
+    if(is.null(input$relapse.dat)) return(NULL)
+    input$rsubj_col
+  })
+  
+  rdate_col <- reactive({
+    if(is.null(input$relapse.dat)) return(NULL)
+    input$rdate_col
+  })
+  
   
   progs <- reactive({
     req(input$dat)
@@ -120,8 +130,8 @@ function(input, output, session) {
       outcome   = input$outcome,
       subjects = NULL,
       relapse = relapse.dat(),
-      rsubj_col = input$rsubj_col,
-      rdate_col = input$rdate_col,
+      rsubj_col = rsubj_col(),
+      rdate_col = rdate_col(),
       delta_fun = NULL,
       conf_weeks = input$conf_weeks,
       conf_tol_days = abs(input$conf_tol_days),
