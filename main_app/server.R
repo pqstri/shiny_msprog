@@ -108,11 +108,9 @@ function(input, output, session) {
   progs <- reactive({
     req(input$dat)
     req(input$subj_col)
-    req(input$subj_col)
     req(input$value_col)
     req(input$date_col)
     req(input$outcome)
-    req(input$event)
     
     capture.msprog(
       data = dat(),
@@ -133,7 +131,7 @@ function(input, output, session) {
       relapse_to_event = input$relapse_to_event,
       relapse_to_conf = input$relapse_to_conf,
       relapse_assoc = input$relapse_assoc,
-      event = input$event,
+      event = ifelse(is.null(input$event), "firstprog", input$event),
       baseline = ifelse(is.null(input$baseline), "fixed", input$baseline),
       relapse_indep = NULL,
       sub_threshold = FALSE,
