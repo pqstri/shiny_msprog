@@ -101,8 +101,17 @@ function(input, output, session) {
   })
   
   output$relapseTab <- renderTable({
-    relapse.dat()
+    rel.d <- relapse.dat()
+    ifelse(is.null(rel.d), "Relapse data not uploaded",
+      rel.d)
   })
+  
+  # reactive(input$run_msprog, {
+  #   output$outputTab_details <- renderTable({ progs()$result[2] })
+  #   output$messages <- renderUI({
+  #     HTML(paste(progs()$messages, collapse = "</br>"))
+  #     })
+  # })
   
   rsubj_col <- reactive({
     if(is.null(input$relapse.dat)) return(NULL)
@@ -114,7 +123,7 @@ function(input, output, session) {
     input$rdate_col
   })
   
-  progs <- reactive({
+  progs <- bindEvent(reactive({
     req(input$dat)
     req(input$subj_col)
     req(input$value_col)
@@ -152,7 +161,8 @@ function(input, output, session) {
       include_stable = TRUE,
       verbose = 1
     )
-  })
+  }),
+  input$run_msprog)
   
   # da far scaricare tutte e due
   output$outputTab_details <- renderTable({
@@ -160,8 +170,7 @@ function(input, output, session) {
   })
 
   output$messages <- renderUI({
-    out <- paste(progs()$messages, collapse = "</br>")
-    HTML(out)
+    HTML(paste(progs()$messages, collapse = "</br>"))
   })
   
 }
