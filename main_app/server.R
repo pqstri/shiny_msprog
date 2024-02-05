@@ -114,7 +114,6 @@ function(input, output, session) {
     input$rdate_col
   })
   
-  
   progs <- reactive({
     req(input$dat)
     req(input$subj_col)
@@ -159,7 +158,7 @@ function(input, output, session) {
   output$outputTab_details <- renderTable({
     progs()$result[2]
   })
-  
+
   output$messages <- renderUI({
     out <- paste(progs()$messages, collapse = "</br>")
     HTML(out)
