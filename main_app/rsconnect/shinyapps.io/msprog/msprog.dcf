@@ -5,7 +5,7 @@ account: msprog
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 11058350
-bundleId: 8204694
+bundleId: 8219564
 url: https://msprog.shinyapps.io/msprog/
 version: 1
 asMultiple: FALSE
