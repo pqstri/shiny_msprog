@@ -13,6 +13,7 @@ library(shiny)
 function(input, output, session) {
   
   capture.msprog <- purrr::quietly(MSprog)
+  capture.criteria_text <- purrr::quietly(criteria_text)
   
   dat <- reactive({
     req(input$dat)
@@ -97,21 +98,14 @@ function(input, output, session) {
   })
   
   output$inputTab <- renderTable({
+    if(is.null(dat())) "Longitudinal assessments not uploaded"
     dat()
   })
   
   output$relapseTab <- renderTable({
-    rel.d <- relapse.dat()
-    ifelse(is.null(rel.d), "Relapse data not uploaded",
-      rel.d)
+    if(is.null(relapse.dat())) "Relapse data not uploaded"
+    relapse.dat()
   })
-  
-  # reactive(input$run_msprog, {
-  #   output$outputTab_details <- renderTable({ progs()$result[2] })
-  #   output$messages <- renderUI({
-  #     HTML(paste(progs()$messages, collapse = "</br>"))
-  #     })
-  # })
   
   rsubj_col <- reactive({
     if(is.null(input$relapse.dat)) return(NULL)
@@ -129,6 +123,8 @@ function(input, output, session) {
     req(input$value_col)
     req(input$date_col)
     req(input$outcome)
+    
+    shinyjs::show(id = "download_panel")
     
     capture.msprog(
       data = dat(),
@@ -166,11 +162,25 @@ function(input, output, session) {
   
   # da far scaricare tutte e due
   output$outputTab_details <- renderTable({
-    progs()$result[2]
+    progs()$result$summary
   })
 
   output$messages <- renderUI({
-    HTML(paste(progs()$messages, collapse = "</br>"))
+    HTML(paste0("<p>",
+                capture.criteria_text(progs()$result)$output,
+                "</p><br><p>",
+                paste(progs()$messages, collapse = "</br>"),
+                "</p>"
+           ))
   })
+  
+  output$download <- downloadHandler(
+    filename = function() {
+      paste("MSprog-", Sys.Date(), ".csv", sep="")
+    },
+    content = function(file) {
+      write.csv(progs()$result$results_df, file)
+    }
+  )
   
 }

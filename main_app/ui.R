@@ -31,7 +31,7 @@ fluidPage(
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     
-    div(style = "display:block;overflow:scroll;height: 30%",
+    div(
     sidebarPanel(width = 6,
                  
       useShinyjs(),
@@ -52,13 +52,13 @@ fluidPage(
           # Columns
           HTML("Specify the column names corresponding in your outcome file to the required columns.<br>"),
           HTML("<br>"),
-          div(style="display: inline-block;vertical-align:top; width: 32%;",
+          div(style="display: inline-block;vertical-align:top; width: 30%;",
             selectInput(inputId = "subj_col", label = "Subject ID", choices = c(""))
             ),
-          div(style="display: inline-block;vertical-align:top; width: 32%;",
+          div(style="display: inline-block;vertical-align:top; width: 30%;",
             selectInput(inputId = "value_col", label = "Outcome value", choices = c(""))
           ),
-          div(style="display: inline-block;vertical-align:top; width: 32%;",
+          div(style="display: inline-block;vertical-align:top; width: 30%;",
             selectInput(inputId = "date_col", label = "Date of visit", choices = c(""))
           )
         ),
@@ -247,29 +247,40 @@ fluidPage(
               "Outcome theshold above which consider progressions events",
               value = 0
             ),
-      ))
+      )),
+      
+      div(style = "text-align: center; margin:10px",
+          actionButton(inputId = "advenced_button_on", label = "Advanced setting"),
+          hidden(
+            actionButton(inputId = "advenced_button_off", label = "Close advanced setting")
+          )
       ),
-  
       
       div(style = "text-align: center;",
-        actionButton(inputId = "advenced_button_on", label = "Advanced setting"),
-        hidden(
-          actionButton(inputId = "advenced_button_off", label = "Close advanced setting")
-        )
+          actionButton(inputId = "run_msprog", label = "Compute")
       )
-      
-      
-      # Calcola bottone
+      ),
+  
     ),
     
     
-    # Show a plot of the generated distribution
+    # which information do you want to download:
+    # 1. Extended event report [csv ottenuto da results(output)]
+    # 2. Event count [csv ottenuto da event_count(output)]
+    # 3. Textual description of criteria used, to be reported to 
+    # ensure reproducibility
     mainPanel(width = 6,
-      submitButton(text = "Compute"),
-      tableOutput("inputTab"),
-      tableOutput("relapseTab"),
+      div(#style = "display:block;overflow:scroll;height: 400px",
+        tableOutput("inputTab"),
+      ),
+      div(#style = "display:block;overflow:scroll;height: 400px",
+          tableOutput("relapseTab"),
+      ),
       tableOutput("outputTab_details"),
-      htmlOutput("messages")
+      htmlOutput("messages"),
+      hidden(div(id = "download_panel",
+          inputPanel(downloadButton(outputId = "download"))
+      ))
     ),
   ),
 )
