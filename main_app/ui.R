@@ -6,6 +6,7 @@ if (!require(msprog)) {
 
 library(shiny)
 library(shinyjs)
+library(shinyBS)
 
 # Define UI for application that draws a histogram
 fluidPage(
@@ -40,7 +41,7 @@ fluidPage(
         div(style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
             
           # File
-          h4("Import outcome data*"),
+          h4("Import outcome data*", hidden(icon("eye", id="eye_outcome"))),
           HTML("Choose or drag and drop here a <b>CSV file</b> with longitudinal 
             assessments of an outcome measure (e.g., EDSS) for one or more
             patients (<a href=''>read more</a>).
@@ -48,6 +49,11 @@ fluidPage(
             <i>Note: the outcome file should contain at least the following columns: 
             individual subject identifier, outcome values, and date of visits.</i>"),
           fileInput(inputId = "dat", label = "", multiple = FALSE, accept = ".csv"),
+          
+          bsModal(id = "outcomeTab_pop",
+                  title =  "Outcome data",
+                  trigger = "eye_outcome",
+                  tableOutput("inputTab")),
           
           # Columns
           HTML("Specify the column names corresponding in your outcome file to the required columns.<br>"),
@@ -60,13 +66,13 @@ fluidPage(
           ),
           div(style="display: inline-block;vertical-align:top; width: 30%;",
             selectInput(inputId = "date_col", label = "Date of visit", choices = c(""))
-          )
+          ),
         ),
         
         # Import relapse data ----------------------------------------------------
         # File
         div(style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
-          h4("Import relapse data (optional)"),
+          h4("Import relapse data (optional)", hidden(icon("eye", id="eye_relapse"))),
           HTML("Choose or drag and drop here a <b>CSV file</b> with the dates of 
              relapses (<a href=''>read more</a>). 
              <br>
@@ -74,6 +80,11 @@ fluidPage(
              individual subject identifier, date of relapse.</i>"),
           fileInput(inputId = "relapse.dat", label = "", 
                     multiple = FALSE, accept = c(".csv")),
+          
+          bsModal(id = "relapseTab_pop",
+                  title =  "Relapse data",
+                  trigger = "eye_relapse",
+                  tableOutput("relapseTab")),
           
           # Columns
           HTML("Specify the column names corresponding in your relapse file to the required columns.<br>"),
@@ -270,12 +281,12 @@ fluidPage(
     # 3. Textual description of criteria used, to be reported to 
     # ensure reproducibility
     mainPanel(width = 6,
-      div(#style = "display:block;overflow:scroll;height: 400px",
-        tableOutput("inputTab"),
-      ),
-      div(#style = "display:block;overflow:scroll;height: 400px",
-          tableOutput("relapseTab"),
-      ),
+      # div(#style = "display:block;overflow:scroll;height: 400px",
+      #   tableOutput("inputTab"),
+      # ),
+      # div(#style = "display:block;overflow:scroll;height: 400px",
+      #     tableOutput("relapseTab"),
+      # ),
       tableOutput("outputTab_details"),
       htmlOutput("messages"),
       hidden(div(id = "download_panel",

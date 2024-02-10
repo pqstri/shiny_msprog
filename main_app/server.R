@@ -59,6 +59,8 @@ function(input, output, session) {
       inputId = 'date_col', 
       choices  = c("", names(dat()))
     )
+    
+    shinyjs::show(id = "eye_outcome")
   })
   
   observeEvent(input$relapse.dat, {
@@ -73,6 +75,7 @@ function(input, output, session) {
       inputId = 'rdate_col', 
       choices  = c("", names(relapse.dat()))
     )
+    shinyjs::show(id = "eye_relapse")
   })
   
   observeEvent(input$conf_unbounded_right, {
