@@ -206,7 +206,7 @@ function(input, output, session) {
   
   # da far scaricare tutte e due
   output$outputTab_details <- renderTable({
-    progs()$result$summary
+    tibble::rownames_to_column(progs()$result$summary, var = input$subj_col)
   })
 
   output$messages <- renderUI({
