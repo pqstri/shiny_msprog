@@ -120,7 +120,47 @@ function(input, output, session) {
     input$rdate_col
   })
   
+  update.user.input.message <- reactive({
+    shinyjs::hide(id = "input_guide_message_all")
+    shinyjs::hide(id = "input_guide_message_outcome_file")
+    shinyjs::hide(id = "input_guide_message_outcome_definition")
+    shinyjs::hide(id = "input_guide_message_outcome_idcol")
+    shinyjs::hide(id = "input_guide_message_outcome_outcol")
+    shinyjs::hide(id = "input_guide_message_outcome_datecol")
+    
+    if (is.null(input$dat) & is.null(input$outcome)) {
+      shinyjs::show(id = "input_guide_message_all")
+    } else {
+      
+      if (is.null(input$dat)) {
+        shinyjs::show(id = "input_guide_message_outcome_file")
+      } else {
+        if (input$subj_col == "") {
+          shinyjs::show(id = "input_guide_message_outcome_idcol")
+        } 
+        if (input$value_col == "") {
+          shinyjs::show(id = "input_guide_message_outcome_outcol")
+        } 
+        if (input$date_col == "") {
+          shinyjs::show(id = "input_guide_message_outcome_datecol")
+        } 
+      }
+      
+      if (is.null(input$outcome)) {
+        shinyjs::show(id = "input_guide_message_outcome_definition")
+      }
+      
+     
+    }
+    
+
+    
+  }) 
+  
   progs <- bindEvent(reactive({
+    
+    update.user.input.message()
+    
     req(input$dat)
     req(input$subj_col)
     req(input$value_col)
@@ -128,6 +168,7 @@ function(input, output, session) {
     req(input$outcome)
     
     shinyjs::show(id = "download_panel")
+    
     
     capture.msprog(
       data = dat(),

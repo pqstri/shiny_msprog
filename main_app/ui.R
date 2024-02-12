@@ -11,6 +11,13 @@ library(shinyBS)
 # Define UI for application that draws a histogram
 fluidPage(
   
+  tags$head(
+    # Note the wrapping of the string in HTML()
+    tags$style(HTML("
+        html{scroll-behavior: smooth;}
+                    "))
+  ),
+  
   # Application title
   titlePanel(
     title = "MSprog",
@@ -38,7 +45,7 @@ fluidPage(
       useShinyjs(),
       
         # Import outcome data ----------------------------------------------------
-        div(style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
+        div(id = "outcome_data_block", style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
             
           # File
           h4("Import outcome data*", hidden(icon("eye", id="eye_outcome"))),
@@ -58,13 +65,13 @@ fluidPage(
           # Columns
           HTML("Specify the column names corresponding in your outcome file to the required columns.<br>"),
           HTML("<br>"),
-          div(style="display: inline-block;vertical-align:top; width: 30%;",
+          div(id = "subj_col_block", style="display: inline-block;vertical-align:top; width: 30%;",
             selectInput(inputId = "subj_col", label = "Subject ID", choices = c(""))
             ),
-          div(style="display: inline-block;vertical-align:top; width: 30%;",
+          div(id = "value_col_block", style="display: inline-block;vertical-align:top; width: 30%;",
             selectInput(inputId = "value_col", label = "Outcome value", choices = c(""))
           ),
-          div(style="display: inline-block;vertical-align:top; width: 30%;",
+          div(id = "date_col_block", style="display: inline-block;vertical-align:top; width: 30%;",
             selectInput(inputId = "date_col", label = "Date of visit", choices = c(""))
           ),
         ),
@@ -98,7 +105,7 @@ fluidPage(
         ),
         
         # Outcome ----------------------------------------------------------------
-        div(style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
+        div(id = "outcome_type_block", style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
           h4("Outcome definition*"),
           HTML("Specify the outcome type.
                <br>This selection is associated to a
@@ -268,11 +275,13 @@ fluidPage(
       ),
       
       div(style = "text-align: center;",
-          actionButton(inputId = "run_msprog", label = "Compute")
+          actionButton(inputId = "run_msprog", label = "Compute",
+                       onclick = "location.href='#results_panel';")
       )
       ),
   
     ),
+    
     
     
     # which information do you want to download:
@@ -281,17 +290,23 @@ fluidPage(
     # 3. Textual description of criteria used, to be reported to 
     # ensure reproducibility
     mainPanel(width = 6,
-      # div(#style = "display:block;overflow:scroll;height: 400px",
-      #   tableOutput("inputTab"),
-      # ),
-      # div(#style = "display:block;overflow:scroll;height: 400px",
-      #     tableOutput("relapseTab"),
-      # ),
-      tableOutput("outputTab_details"),
-      htmlOutput("messages"),
-      hidden(div(id = "download_panel",
-          inputPanel(downloadButton(outputId = "download"))
-      ))
-    ),
-  ),
+              div(
+                id = "results_panel",
+                p(),
+                h3("Results"),
+                HTML('<p id = input_guide_message_all>Fill in the required input and then press the "Compute" button to see results.</p>'
+                ),
+                HTML('<p hidden id = input_guide_message_outcome_file>Please <a href="#outcome_data_block">import outcome data</a>.</p>'),
+                HTML('<p hidden id = input_guide_message_outcome_definition>Please <a href="#outcome_type_block">select outcome data</a>.</p>'),
+                HTML('<p hidden id = input_guide_message_outcome_idcol>Please specify the column names corresponding in your outcome file to the <a href="#subj_col_block">subject identifier column</a>.</p>'),
+                HTML('<p hidden id = input_guide_message_outcome_outcol>Please specify the column names corresponding in your outcome file to the <a href="#value_col_block">outcome values column</a>.</p>'),
+                HTML('<p hidden id = input_guide_message_outcome_datecol>Please specify the column names corresponding in your outcome file to the <a href="#date_col_block">date of visits column</a>.</p>'),
+                tableOutput("outputTab_details"),
+                htmlOutput("messages"),
+                hidden(div(id = "download_panel",
+                           inputPanel(
+                             downloadButton(outputId = "download")
+                           )))
+              )),
+  ), 
 )
