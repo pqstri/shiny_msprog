@@ -301,12 +301,12 @@ fluidPage(
                 HTML('<p hidden id = input_guide_message_outcome_idcol>Please specify the column names corresponding in your outcome file to the <a href="#subj_col_block">subject identifier column</a>.</p>'),
                 HTML('<p hidden id = input_guide_message_outcome_outcol>Please specify the column names corresponding in your outcome file to the <a href="#value_col_block">outcome values column</a>.</p>'),
                 HTML('<p hidden id = input_guide_message_outcome_datecol>Please specify the column names corresponding in your outcome file to the <a href="#date_col_block">date of visits column</a>.</p>'),
-                tableOutput("outputTab_details"),
                 htmlOutput("messages"),
                 hidden(div(id = "download_panel",
                            inputPanel(
                              downloadButton(outputId = "download")
-                           )))
+                           ))),
+                tableOutput("outputTab_details")
               )),
   ), 
 )
