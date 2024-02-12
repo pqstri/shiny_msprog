@@ -79,12 +79,8 @@ function(input, output, session) {
   })
   
   observeEvent(input$conf_unbounded_right, {
-    if(input$conf_unbounded_right) {
-      updateSliderInput(
-        session = session, 
-        inputId = 'conf_tol_days',
-        value = c(input$conf_tol_days[1], 60),
-      )
+    if(input$conf_unbounded_right) { disable(id = "conf_tol_days") } else {
+      enable(id = "conf_tol_days")
     }
   })
   
@@ -183,7 +179,7 @@ function(input, output, session) {
       delta_fun = NULL,
       conf_weeks = input$conf_weeks,
       conf_tol_days = abs(input$conf_tol_days),
-      conf_unbounded_right = FALSE,
+      conf_unbounded_right = input$conf_unbounded_right,
       require_sust_weeks = input$require_sust_weeks,
       relapse_to_bl = input$relapse_to_bl,
       relapse_to_event = input$relapse_to_event,
