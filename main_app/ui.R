@@ -318,7 +318,7 @@ fluidPage(
                 htmlOutput("messages"),
                 
                 hidden(h4(id = "event_count_title", "Event count")),
-                div(style = "height:50px; overflow-y: scroll;overflow-x: scroll;",
+                div(style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
                   tableOutput("outputTab_details")
                   ),
                 hidden(div(id = "download_panel", style = "",
