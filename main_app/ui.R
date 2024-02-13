@@ -327,4 +327,7 @@ fluidPage(
                            )))
               )),
   ), 
+  # HTML('<footer style="text-align: center; padding: 3px; background-color: rgb(66, 139, 202);; color: white;">
+  #            <p>Authors: <a href="mailto:noemi.montobbio@edu.unige.it">Noemi Montobbio</a>, Luca Carmisciano</p>
+  #       </footer>')
 )
