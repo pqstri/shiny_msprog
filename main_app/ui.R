@@ -101,7 +101,7 @@ fluidPage(
               selectInput(inputId = "rsubj_col", label = "Subject ID", choices = c(""))
           ),
           div(style="display: inline-block;vertical-align:top; width: 49.4%;",
-              selectInput(inputId = "rdate_col", label = "Date of visit", choices = c(""))
+              selectInput(inputId = "rdate_col", label = "Date of relapse", choices = c(""))
           )
         ),
         
@@ -109,9 +109,10 @@ fluidPage(
         div(id = "outcome_type_block", style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
           h4("Outcome definition*"),
           HTML("Specify the outcome type.
-               <br>This selection is associated to a
-                minimum delta corresponding to a valid change from the provided 
-                baseline value (<a href=''>more options</a>).<br>"),
+               <br>This selection determines the minimum shift corresponding to 
+               a valid change from baseline in the outcome value 
+               (e.g., for NHPT, 20% of value at baseline, 
+               <a href=''>more options</a>).<br>"),
           HTML("<br>"),
           radioButtons(
             inputId = "outcome",
@@ -143,7 +144,7 @@ fluidPage(
               "Only the very first event (improvement or progression)" = "first",
               "All events, in chronological order" = "multiple"
               ),
-            selected = NA
+            selected = "firstprog"
           )
         ),
         
@@ -164,7 +165,7 @@ fluidPage(
                 measure and confirmed at the following visit" = "roving_impr",
                 "Updated after each event to last valid confirmed outcome value" = "roving"
               ),
-              selected = NA
+              selected = "fixed"
             )
         ),
         
@@ -173,8 +174,7 @@ fluidPage(
             h4("Confirmation definition"),
             HTML("Confirmation is defined as an 
                  event assessed within a specific time interval from the event onset.
-                 <br><i>Note: higer intervals improve the stability of event
-                 detection but is likely to decrease their number.</i><br>"),
+                 <br><i>Note: larger intervals improve the stability of event detection but are likely to decrease the number of events'.</i><br>"),
             HTML("<br>"),
             HTML("<hr>"),
             sliderInput(
@@ -274,15 +274,15 @@ fluidPage(
             
             numericInput(
               "min_value",
-              "Outcome theshold above which consider progressions events",
-              value = 0
+              "Only include progression events with outcome value not lower than threshold",
+              value = NULL
             ),
       )),
       
       div(style = "text-align: center; margin:10px",
-          actionButton(inputId = "advenced_button_on", label = "Advanced setting"),
+          actionButton(inputId = "advenced_button_on", label = "Advanced settings"),
           hidden(
-            actionButton(inputId = "advenced_button_off", label = "Close advanced setting")
+            actionButton(inputId = "advenced_button_off", label = "Close advanced settings")
           )
       ),
       
