@@ -158,7 +158,8 @@ function(input, output, session) {
     req(input$outcome)
     
     shinyjs::show(id = "download_panel")
-    
+    shinyjs::show(id = "criteria_description_title")
+    shinyjs::show(id = "event_count_title")
     
     capture.msprog(
       data = dat(),
