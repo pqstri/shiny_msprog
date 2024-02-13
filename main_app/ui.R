@@ -7,6 +7,7 @@ if (!require(msprog)) {
 library(shiny)
 library(shinyjs)
 library(shinyBS)
+library(shinyWidgets)
 
 # Define UI for application that draws a histogram
 fluidPage(
@@ -185,24 +186,35 @@ fluidPage(
               step = 1,
               post = " weeks"
             ),
-            HTML("<hr>"),
-            sliderInput(
-              inputId = "conf_tol_days",
-              label = "Specify the tolerance window for the confirmation interval",
-              min = -60,
-              max = 60,
-              value = c(-30, 30),
-              post = " days"
-            ),
+            
             HTML("<hr>"),
             # sposta conf_tol_days dx 
-            radioButtons(
-              inputId = "conf_unbounded_right",
-              label = 'Do you want the confirmation window to be unbounded on 
-              the right? (e.g., "confirmed at 12 weeks or more")',
-              choices = c("Yes" = T, "No" = F),
-              selected = NA
-              ),
+            # radioButtons(
+            #   inputId = "conf_unbounded_right",
+            #   label = 'Do you want the confirmation window to be unbounded on 
+            #   the right? (e.g., "confirmed at 12 weeks or more")',
+            #   choices = c("Yes" = T, "No" = F),
+            #   selected = NA
+            #   ),
+            # 
+            # HTML("<hr>"),
+            
+            shinyWidgets::sliderTextInput(
+              inputId = "conf_tol_days", 
+              post = " days",
+              from_max = 0,
+              to_min = 0,
+              grid = T,
+              # force_edges = T,
+              label = "Specify the tolerance window for the confirmation interval", 
+              selected = c(-14, 14),
+              choices = c("-60", seq(-60, 60, 1), "Unbound")
+            ),
+            tags$style(HTML("
+              .irs--shiny .irs-shadow{
+                height: 0px;
+              }"
+            )),
             
         ),
   

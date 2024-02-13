@@ -77,13 +77,7 @@ function(input, output, session) {
     )
     shinyjs::show(id = "eye_relapse")
   })
-  
-  observeEvent(input$conf_unbounded_right, {
-    if(input$conf_unbounded_right) { disable(id = "conf_tol_days") } else {
-      enable(id = "conf_tol_days")
-    }
-  })
-  
+
   ## observe the button being pressed
   observeEvent(input$advenced_button_on, {
     shinyjs::show(id = "advancedbox")
@@ -178,8 +172,8 @@ function(input, output, session) {
       rdate_col = rdate_col(),
       delta_fun = NULL,
       conf_weeks = input$conf_weeks,
-      conf_tol_days = abs(input$conf_tol_days),
-      conf_unbounded_right = input$conf_unbounded_right,
+      conf_tol_days = abs(as.numeric(input$conf_tol_days)),
+      conf_unbounded_right = input$conf_tol_days[2] == "Unbound",
       require_sust_weeks = input$require_sust_weeks,
       relapse_to_bl = input$relapse_to_bl,
       relapse_to_event = input$relapse_to_event,
