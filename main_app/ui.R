@@ -321,7 +321,7 @@ fluidPage(
                 div(style = "max-height: 500px; overflow: scroll;",
                   tableOutput("outputTab_details")
                   ),
-                hidden(div(id = "download_panel", style = "",
+                hidden(div(id = "download_panel", style = "text-align: center",
                            inputPanel(
                              downloadButton(outputId = "download")
                            )))
