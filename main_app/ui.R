@@ -266,11 +266,11 @@ fluidPage(
               step = 30
             ),
             
-            selectInput(
-              "subjects",
-              "Subset of subjects to include",
-              choices = c("Include all")
-            ),
+            # selectInput(
+            #   "subjects",
+            #   "Subset of subjects to include",
+            #   choices = c("Include all")
+            # ),
             
             numericInput(
               "min_value",
