@@ -184,12 +184,12 @@ function(input, output, session) {
       relapse_indep = NULL,
       sub_threshold = FALSE,
       relapse_rebl = FALSE,
-      min_value = input$min_value,
+      min_value = switch(is.null(input$min_value), NULL, input$min_value),
       prog_last_visit = FALSE,
       include_dates = TRUE,
       include_value = TRUE,
       include_stable = TRUE,
-      verbose = 1
+      verbose = 0
     )
   }),
   input$run_msprog)
