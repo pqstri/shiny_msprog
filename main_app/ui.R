@@ -83,7 +83,7 @@ fluidPage(
           h4("Import relapse data (optional)", hidden(icon("eye", id="eye_relapse"))),
           HTML("Choose or drag and drop here a <b>CSV file</b> with the dates of 
              relapses"),
-          actionLink('csv_guide', label = "read more"), 
+          # actionLink('csv_guide', label = "read more"), 
           HTML(".<br><i>Note: the relapse file should contain at least the following columns: 
              individual subject identifier, date of relapse.</i>"),
           fileInput(inputId = "relapse.dat", label = "", 
@@ -166,7 +166,9 @@ fluidPage(
                                      
                                      <p>Once you\'ve successfully created a CSV file you can upload in MSprog.</p>
             
-            <p><i>Tip: Use the "x" icon to preview your CSV data in MSprog before calculating progressions. Ensure everything looks correct before proceeding!</I></p>
+            <p><i>Tip: Use the '),
+            icon("eye", id="eye_outcome"),
+            HTML('icon to preview your CSV data in MSprog before calculating progressions. Ensure everything looks correct before proceeding!</I></p>
             ')),
           
           # Columns
