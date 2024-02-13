@@ -52,9 +52,9 @@ fluidPage(
           h4("Import outcome data*", hidden(icon("eye", id="eye_outcome"))),
           HTML("Choose or drag and drop here a <b>CSV file</b> with longitudinal 
             assessments of an outcome measure (e.g., EDSS) for one or more
-            patients (<a href=''>read more</a>).
-            <br>
-            <i>Note: the outcome file should contain at least the following columns: 
+            patients"),
+          actionLink('csv_guide', label = "read more"),
+          HTML(".<br><i>Note: the outcome file should contain at least the following columns: 
             individual subject identifier, outcome values, and date of visits.</i>"),
           fileInput(inputId = "dat", label = "", multiple = FALSE, accept = ".csv"),
           
@@ -82,9 +82,9 @@ fluidPage(
         div(style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
           h4("Import relapse data (optional)", hidden(icon("eye", id="eye_relapse"))),
           HTML("Choose or drag and drop here a <b>CSV file</b> with the dates of 
-             relapses (<a href=''>read more</a>). 
-             <br>
-             <i>Note: the relapse file should contain at least the following columns: 
+             relapses"),
+          actionLink('csv_guide', label = "read more"), 
+          HTML(".<br><i>Note: the relapse file should contain at least the following columns: 
              individual subject identifier, date of relapse.</i>"),
           fileInput(inputId = "relapse.dat", label = "", 
                     multiple = FALSE, accept = c(".csv")),
@@ -93,6 +93,81 @@ fluidPage(
                   title =  "Relapse data",
                   trigger = "eye_relapse",
                   tableOutput("relapseTab")),
+          
+          bsModal(id = "csv_guide_pop",
+                  title = "Guide",
+                  trigger = "csv_guide",
+                  HTML('<!-- Introduction -->
+            <h2>CSV files</h2>
+            
+            <p>CSV (Comma-Separated Values) files are widely used for data storage and exchange between different software applications because of their simplicity and universality. They are commonly employed in data analysis, databases, and spreadsheet applications.</p>
+            
+            <p>A CSV file is a plain text file that stores tabular data (numbers and text) in a plain, human-readable format. In a CSV file, each line represents a row of the table, and the values within each row are separated by commas. The first row contains headers, specifying the names of the columns.
+            </p>
+            
+            <!-- Using Excel -->
+            <h3>Using Excel:</h3>
+            
+            <ol>
+              <li><strong>Open Excel:</strong>
+                <ul>
+                  <li>Launch Microsoft Excel on your computer.</li>
+                </ul>
+              </li>
+            
+              <li><strong>Enter, Copy, or Import Data:</strong>
+                <ul>
+                  <li>Envision a table with columns: "id," "date," "outcome1," and "outcome2."</li>
+                  <li>The first row designates the name of each column or variable, placed in separate cells.</li>
+                  <li>Below that, input your data row by row, adhering to the order of cells in the first row.</li>
+                </ul>
+              </li>
+            
+              <li><strong>Save as CSV:</strong>
+                <ul>
+                  <li>Navigate to the top-left corner and click "File."</li>
+                  <li>Select "Save As."</li>
+                  <li>Choose the destination for your file.</li>
+                  <li>In the "Save as type" dropdown, opt for "CSV (Comma delimited) (*.csv)."</li>
+                  <li>Provide your file with a name ending in <code>.csv</code>, and then click "Save."</li>
+                </ul>
+              </li>
+            </ol>
+            
+            <!-- Using a Text Editor -->
+            <h3>Using a Text Editor (e.g., Notepad or VS Code):</h3>
+            
+            <ol>
+              <li><strong>Open Text Editor:</strong>
+                <ul>
+                  <li>Open your preferred text editor.</li>
+                </ul>
+              </li>
+            
+              <li><strong>Enter, Copy, or Import Data:</strong>
+                <ul>
+                  <li>Visualize a table with columns: "id," "date," "outcome1," and "outcome2."</li>
+                  <li>The first row signifies the name of each column, separated by a comma.</li>
+                  <li>Below that, input your data row by row, ensuring alignment with the column order and separating columns with commas.</li>
+                </ul>
+              </li>
+            
+              <li><strong>Save as CSV:</strong>
+                <ul>
+                  <li>Head to the top-left corner and click "File."</li>
+                  <li>Opt for "Save As."</li>
+                  <li>Indicate the file\'s destination.</li>
+                                     <li>Provide a name for your file ending with <code>.csv</code>.</li>
+                                     <li>In the "Save as type" dropdown, choose "All Files (*.*)".</li>
+                                     <li>Click "Save."</li>
+                                     </ul>
+                                     </li>
+                                     </ol>
+                                     
+                                     <p>Once you\'ve successfully created a CSV file you can upload in MSprog.</p>
+            
+            <p><i>Tip: Use the "x" icon to preview your CSV data in MSprog before calculating progressions. Ensure everything looks correct before proceeding!</I></p>
+            ')),
           
           # Columns
           HTML("Specify the column names corresponding in your relapse file to the required columns.<br>"),
@@ -111,8 +186,7 @@ fluidPage(
           HTML("Specify the outcome type.
                <br>This selection determines the minimum shift corresponding to 
                a valid change from baseline in the outcome value 
-               (e.g., for NHPT, 20% of value at baseline, 
-               <a href=''>more options</a>).<br>"),
+               (e.g., for NHPT, 20% of value at baseline).<br>"),
           HTML("<br>"),
           radioButtons(
             inputId = "outcome",
