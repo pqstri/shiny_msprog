@@ -8,6 +8,7 @@
 #
 
 library(shiny)
+library(writexl)
 
 # Define server logic required to draw a histogram
 function(input, output, session) {
@@ -210,11 +211,18 @@ function(input, output, session) {
   })
   
   output$download <- downloadHandler(
+   
     filename = function() {
-      paste("MSprog-", Sys.Date(), ".csv", sep="")
+      paste("MSprog-", Sys.Date(), ".xlsx", sep="")
     },
+    
     content = function(file) {
-      write.csv(progs()$result$results_df, file)
+      writexl::write_xlsx(list(
+          "Criteria" = data.frame(Description = capture.criteria_text(progs()$result)$output), 
+          "Event count" = progs()$result$summary,
+          "Event details" = progs()$result$results_df
+        ),
+        path = file)
     }
   )
   
