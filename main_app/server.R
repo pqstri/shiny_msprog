@@ -241,7 +241,7 @@ function(input, output, session) {
     content = function(file) {
       writexl::write_xlsx(list(
           "Criteria" = data.frame(Description = capture.criteria_text(progs()$result)$output), 
-          "Event count" = progs()$result$summary,
+          "Event count" = as.data.frame(progs()$result$summary),
           "Event details" = progs()$result$results_df
         ),
         path = file)
