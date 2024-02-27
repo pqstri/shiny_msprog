@@ -9,6 +9,7 @@
 
 library(shiny)
 library(writexl)
+library(shinyBS)
 
 # Define server logic required to draw a histogram
 function(input, output, session) {
@@ -21,12 +22,26 @@ function(input, output, session) {
     if (!endsWith(input$dat$name, ".csv")) {
       validate("Invalid file; Please upload a .csv")
     }
-    read.csv(input$dat$datapath,
-             header = TRUE, 
-             row.names = NULL,
-             sep = ",",
-             strip.white = TRUE,
-             na.strings = "")[,-1]
+    
+    first.line <- readLines(input$dat$datapath, n = 1)
+    cat(first.line)
+    cat(grepl(";", first.line) & !grepl(",", first.line))
+    if(grepl(";", first.line) & !grepl(",", first.line)) {
+      shinyBS::createAlert(
+        session = session, 
+        anchorId = "outcome_data_block",
+        title = "Something is wrong...",
+        content = "Double check if the CSV file is in the correct format (i.e. with a comma and not a semicoln separating the values)")
+    }
+
+    read.csv(
+      input$dat$datapath,
+      header = TRUE,
+      row.names = NULL,
+      sep = ",",
+      strip.white = TRUE,
+      na.strings = ""
+    )[,-1]
   })
   
   relapse.dat <- reactive({
