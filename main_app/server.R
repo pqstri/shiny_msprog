@@ -196,18 +196,25 @@ function(input, output, session) {
   }),
   input$run_msprog)
   
-  # da far scaricare tutte e due
   output$outputTab_details <- renderTable({
-    tibble::rownames_to_column(progs()$result$summary, var = input$subj_col)
+    outs <- as.data.frame(progs()$result$summary)
+    outs <- tibble::rownames_to_column(outs)
+    if("rowname" %in% names(outs)) {
+      names(outs)[which(names(outs) == "rowname")] <- input$subj_col
+    }
+    if(length(names(outs)) == 2) {
+      names(outs)[2] <- input$event
+    }
+    outs
   })
 
   output$messages <- renderUI({
-    HTML(paste0("<p>",
-                capture.criteria_text(progs()$result)$output,
-                "</p><br><p>",
-                paste(progs()$messages, collapse = "</br>"),
-                "</p>"
-           ))
+    # HTML(paste0("<p>",
+    #             capture.criteria_text(progs()$result)$output,
+    #             "</p><br><p>",
+    #             paste(progs()$messages, collapse = "</br>"),
+    #             "</p>"
+    #        ))
   })
   
   output$download <- downloadHandler(
