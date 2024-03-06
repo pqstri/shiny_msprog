@@ -407,6 +407,6 @@ fluidPage(
   #            <p>Authors: <a href="mailto:noemi.montobbio@edu.unige.it">Noemi Montobbio</a>, Luca Carmisciano</p>
   #       </footer>')
   HTML('<footer style="text-align: center;color: lightgray;">
-             <p>version 0.1</p>
+             <p>version 0.2</p>
         </footer>')
 )

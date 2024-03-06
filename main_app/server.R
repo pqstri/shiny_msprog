@@ -224,12 +224,12 @@ function(input, output, session) {
   })
 
   output$messages <- renderUI({
-    # HTML(paste0("<p>",
-    #             capture.criteria_text(progs()$result)$output,
-    #             "</p><br><p>",
-    #             paste(progs()$messages, collapse = "</br>"),
-    #             "</p>"
-    #        ))
+    HTML(paste0("<p>",
+                capture.criteria_text(progs()$result)$output,
+                "</p><br><p>",
+                paste(progs()$messages, collapse = "</br>"),
+                "</p>"
+           ))
   })
   
   output$download <- downloadHandler(
