@@ -79,7 +79,7 @@ fluidPage(
         actionLink('csv_guide', label = "read more"),
         HTML(
           ".<br><i>Note: the outcome file should contain at least the following columns:
-            individual subject identifier, outcome values, and date of visits.</i>"
+            individual subject identifier (anonymized), outcome values, and date of visits.</i>"
         ),
         fileInput(
           inputId = "dat",
@@ -435,6 +435,25 @@ fluidPage(
             step = 30
           ),
           
+          radioButtons(
+            inputId = "check_intermediate",
+            label = "Check for confirmation over all intermediate visits up to the confirmation visit.",
+            choices = c(
+              "Yes (reccomendend)" = TRUE,
+              "No" = FALSE
+            ),
+            selected = TRUE
+          ),
+          
+          radioButtons(
+            inputId = "prog_last_visit",
+            label = "Include progressions occurring at last visit (i.e. with no confirmation)",
+            choices = c(
+              "Yes" = TRUE,
+              "No" = FALSE
+            ),
+            selected = FALSE
+          ),
           # selectInput(
           #   "subjects",
           #   "Subset of subjects to include",
