@@ -8,7 +8,7 @@
 #
 
 # install msprog package
-devtools::install_github("noemimontobbio/msprog")
+# devtools::install_github("noemimontobbio/msprog")
 
 # load libraries
 library(shiny)   # to run the web app
@@ -26,7 +26,7 @@ function(input, output, session) {
   capture.msprog <- purrr::quietly(msprog::MSprog)
   
   # define function to capture printed text in MSprog
-  capture.criteria_text <- purrr::quietly(msprog::criteria_text)
+  capture.criteria_text <- purrr::quietly(print)
   
   
   # Data loader ----------------------------------------------------
@@ -305,7 +305,7 @@ function(input, output, session) {
   output$outputTab_details <- renderTable({
     
     # read the msprog summary results table
-    outs <- as.data.frame(progs()$result$summary)
+    outs <- progs()$result$event_count
     
     # adapt the output to different calculations behavior
     # use row names as a subject identifier column
@@ -337,7 +337,7 @@ function(input, output, session) {
       "</p><br><p>",
       
       # of MSprog messages
-      paste(progs()$messages, collapse = "</br>"),"</p>"))
+      paste(print(progs()$result), collapse = "</br>"),"</p>"))
   })
   
   # enable user to download the computed progressions
@@ -356,10 +356,13 @@ function(input, output, session) {
           "Criteria" = data.frame(Description = capture.criteria_text(progs()$result)$output), 
           
           # MSprog summary results in the second sheet
-          "Event count" = as.data.frame(progs()$result$summary),
+          "Event count" = setNames(cbind(
+            unique(dat()[, input$subj_col]), # ask noemi
+            progs()$result$event_count), 
+            c(input$subj_col, names(progs()$result$event_count))),
           
           # and MSprog detailed results in the third sheet
-          "Event details" = progs()$result$results_df
+          "Event details" = progs()$result$results
         ),
         path = file)
     }
