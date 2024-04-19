@@ -1,5 +1,5 @@
 # install msprog package
-devtools::install_github("noemimontobbio/msprog")
+# devtools::install_github("noemimontobbio/msprog")
 
 # load libraries
 library(msprog)
@@ -72,7 +72,7 @@ fluidPage(
         # File
         h4("Import outcome data*", hidden(icon("eye", id = "eye_outcome"))),
         HTML(
-          "Choose or drag and drop here a <b>CSV file</b> with longitudinal
+          "Choose or drag and drop here a <b>CSV or EXCEL file</b> with longitudinal
             assessments of an outcome measure (e.g., EDSS) for one or more
             patients"
         ),
@@ -85,7 +85,7 @@ fluidPage(
           inputId = "dat",
           label = "",
           multiple = FALSE,
-          accept = ".csv"
+          accept = c(".csv", ".xls", ".xlsx")
         ),
         
         bsModal(

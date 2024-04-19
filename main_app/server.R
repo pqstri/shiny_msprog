@@ -12,6 +12,8 @@
 
 # load libraries
 library(shiny)   # to run the web app
+library(readxl)  # to import excel files
+library(stringr) # to ease regex
 library(writexl) # to export excel files
 library(shinyBS) # to include alert and multiple pages
 library(msprog)  # to compute progression
@@ -30,31 +32,9 @@ function(input, output, session) {
   
   
   # Data loader ----------------------------------------------------
-  ## Event data ----------------------------------------------------
-  # define event data source as a reactive data frame
-  dat <- reactive({
-    
-    # to be created require the input file
-    req(input$dat)
-    
-    # check if the format is .csv
-    if (!endsWith(input$dat$name, ".csv")) {
-      # otherwise prompt an error
-      validate("Invalid file; Please upload a .csv")
-    }
-    
-    # read the first line of the file to get .csv format details
-    first.line <- readLines(input$dat$datapath, n = 1)
-
-    # if the .csv format has semicolon(s) and not comma(s) rise an alert message
-    if(grepl(";", first.line) & !grepl(",", first.line)) {
-      shinyBS::createAlert(
-        session = session, 
-        anchorId = "outcome_data_block",
-        title = "Something might be wrong...",
-        content = "Double check if the CSV file is in the correct format (i.e. with a comma and not a semicoln separating the values)")
-    }
-
+  
+  # CSV format loader
+  load.csv <- function() {
     # read the csv source and skip row names
     read.csv(
       file = input$dat$datapath,
@@ -64,6 +44,46 @@ function(input, output, session) {
       strip.white = TRUE,
       na.strings = ""
     )[,-1]
+  }
+  
+  # xls and xlsx format loader
+  load.excel <- function() {
+    # read the csv source and skip row names
+    readxl::read_excel(
+      path = input$dat$datapath)
+  }
+  
+  ## Event data ----------------------------------------------------
+  # define event data source as a reactive data frame
+  dat <- reactive({
+    
+    # to be created require the input file
+    req(input$dat)
+    
+    # check if the format is .csv
+    # if (!endsWith(input$dat$name, ".csv")) {
+    #   # otherwise prompt an error
+    #   validate("Invalid file; Please upload a .csv")
+    # }
+    
+    # # read the first line of the file to get .csv format details
+    # first.line <- readLines(input$dat$datapath, n = 1)
+    # 
+    # # if the .csv format has semicolon(s) and not comma(s) rise an alert message
+    # if(grepl(";", first.line) & !grepl(",", first.line)) {
+    #   shinyBS::createAlert(
+    #     session = session, 
+    #     anchorId = "outcome_data_block",
+    #     title = "Something might be wrong...",
+    #     content = "Double check if the CSV file is in the correct format (i.e. with a comma and not a semicoln separating the values)")
+    # }
+
+    # assign file to reader based on format
+    switch (stringr::str_extract(input$dat$name, "(?<=\\.)[^\\.]*?$"),
+            "csv" = load.csv(),
+            "xlsx" = load.excel(),
+            "xls" = load.excel(),
+    )
   })
   
   ## Relapse data ----------------------------------------------------
