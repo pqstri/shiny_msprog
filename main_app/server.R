@@ -17,6 +17,7 @@ library(stringr) # to ease regex
 library(writexl) # to export excel files
 library(shinyBS) # to include alert and multiple pages
 library(msprog)  # to compute progression
+library(DT)      # to visualize imported data
 
 # Define server logic required to draw a histogram
 function(input, output, session) {
@@ -196,9 +197,9 @@ function(input, output, session) {
   # User messages --------------------------------------------------------
 
   # if event data is not uploaded ask for event data
-  output$inputTab <- renderTable({
+  output$inputTab <- DT::renderDataTable({
     if(is.null(dat())) "Longitudinal assessments not uploaded"
-    dat()
+    DT::datatable(dat())
   })
   
   # if relapse data is not uploaded ask for relapse data

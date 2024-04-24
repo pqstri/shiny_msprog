@@ -5,6 +5,7 @@
 library(msprog)
 library(shiny)
 library(shinyjs)
+library(DT)
 library(shinyBS)
 library(shinyWidgets)
 
@@ -92,7 +93,7 @@ fluidPage(
           id = "outcomeTab_pop",
           title =  "Outcome data",
           trigger = "eye_outcome",
-          tableOutput("inputTab")
+          DT::DTOutput("inputTab")
         ),
         
         # Columns
