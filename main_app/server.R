@@ -374,13 +374,21 @@ function(input, output, session) {
       args$validconf_col <- input$validconf_col
     }
     
+    #Sys.sleep(10)
     do.call(capture.msprog, args)
+    
   }),
   
   # bind the previous function is to user pressing the compute button.
   # [note: this is a custom behavior]
   # [note: shiny is forced not to auto-update]
   input$run_msprog)
+  
+  output$has_results <- reactive({
+    !is.null(progs())
+  })
+  outputOptions(output, "has_results", suspendWhenHidden = FALSE)
+  
   
   # generate the results data.frame
   output$outputTab_details <- renderTable({

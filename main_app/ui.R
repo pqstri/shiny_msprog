@@ -105,17 +105,16 @@ fluidPage(
   # Introduction block
   HTML("
   <p>Welcome to the MSprog web app. This page serves as a graphical interface
-  to the main function of the <a href='https://github.com/noemimontobbio/msprog/'>msprog R package</a>,
+  to the main function of the <a href='https://github.com/noemimontobbio/msprog/'><i>msprog</i> R package</a>,
   developed by the Biostatistics group at the Health Sciences Department (DISSAL)
   of the University of Genoa (Genoa, Italy).</p>"),
   icon("book"), tags$a(href='https://github.com/noemimontobbio/msprog/blob/master/msprog.pdf',
                        "msprog reference manual"),
-  HTML("<br><br><p>If you use MSprog in your work, please cite it as follows:</p>
-  <blockquote style='font-size: 1em' cite='https://doi.org/10.1101/2024.01.30.24302013'><b>Creating an automated tool for a consistent 
+  HTML("<br><br><p>If you use the <i>msprog</i> R package or the <i>MSprog</i> web app in your work, please cite:</p>
+  <blockquote style='font-size: 1em' cite='https://doi.org/10.1177/13524585241243157'><b>Creating an automated tool for a consistent 
   and repeatable evaluation of disability progression in clinical studies for Multiple Sclerosis</b><br>
      <i>Noemi Montobbio, Luca Carmisciano, Alessio Signori, Marta Ponzano, Irene Schiavetti, Francesca Bovis, Maria Pia Sormani</i><br>
-     medRxiv 2024.01.30.24302013; <b>doi</b>: <a href='https://doi.org/10.1101/2024.01.30.24302013'>10.1101/2024.01.30.24302013</a> <br>
-     accepted for publication on MSJ on 15/03/2024
+     Mult Scler. 2024;30(9):1185-1192. <b>doi</b>: <a href='https://doi.org/10.1177/13524585241243157'>10.1177/13524585241243157</a>
   </blockquote><br><br>"
   ),
   
@@ -290,20 +289,9 @@ fluidPage(
         id = "outcome_type_block",
         style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
         h4("Outcome definition", tags$span("*", style = "color: red;")),
-        HTML(
-          "Specify the outcome type.<br>
-          This selection determines the direction of worsening (increase for EDSS, NHPT, and T25FW; 
-          decrease for SDMT) and the minimum accepted clinically meaningful change given the reference value. 
-          Specifically:<ul>
-  <li>EDSS: 1.5 if baseline=0; 1.0 if 0 &lt; baseline &le; 5.0; 0.5 if baseline &gt; 5.0 (<a href='https://doi.org/10.1056/nejmoa2415988'>Fox 2025</a>)</li>
-  <li>NHPT and T25FW: 20% of baseline (<a href='https://doi.org/10.1177/1352458510370464'>Bosma 2010</a>)</li>
-  <li>SDMT: either 3 points or 10% of baseline (<a href='https://doi.org/10.1177/1352458518808204'>Strober 2018</a>).
-  </ul>"
-        ),
-        HTML("<br>"),
         radioButtons(
           inputId = "outcome",
-          label = "Pick one of the options:",
+          label = "Specify the outcome type:",
           choices = c(
             "Expanded Disability Status Scale (EDSS)" = "edss",
             "Nine-Hole Peg Test (NHPT)" = "nhpt",
@@ -311,6 +299,15 @@ fluidPage(
             "Symbol Digit Modalities Test (SDMT)" = "sdmt"
           ),
           selected = NA
+        ),
+        HTML(
+          "<i>Note: this selection determines the direction of worsening (increase for EDSS, NHPT, and T25FW; 
+          decrease for SDMT) and the minimum accepted clinically meaningful change given the reference value. 
+          Specifically:<ul>
+  <li>EDSS: 1.5 if baseline=0; 1.0 if 0 &lt; baseline &le; 5.0; 0.5 if baseline &gt; 5.0 (<a href='https://doi.org/10.1056/nejmoa2415988'>Fox 2025</a>)</li>
+  <li>NHPT and T25FW: 20% of baseline (<a href='https://doi.org/10.1177/1352458510370464'>Bosma 2010</a>)</li>
+  <li>SDMT: either 3 points or 10% of baseline (<a href='https://doi.org/10.1177/1352458518808204'>Strober 2018</a>).
+  </ul></i>"
         )
       ),
       
@@ -318,11 +315,9 @@ fluidPage(
       div(
         style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
         h4("Event definition"),
-        HTML("Specify the event setting of interest.<br>"),
-        HTML("<br>"),
         radioButtons(
           inputId = "event",
-          label = "Pick one of the options:",
+          label = "Specify the event setting of interest:",
           choices = c(
             "First CDW" = "firstCDW",
             "All events, detected sequentially" = "multiple",
@@ -340,13 +335,9 @@ fluidPage(
       div(
         style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
         h4("Baseline definition"),
-        HTML(
-          "Specify a baseline scheme.<br>"
-        ),
-        HTML("<br>"),
         radioButtons(
           inputId = "baseline",
-          label = "Pick one of the options:",
+          label = "Specify a baseline scheme:",
           choices = c(
             "Fixed: first eligible visit in the data" = "fixed",
             "Roving: updated after each CDW or CDI (suitable for a multiple-event setting; 
@@ -363,17 +354,13 @@ fluidPage(
         style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
         h4("Confirmation definition"),
         HTML(
-          "Set the time interval from event onset to the confirmation visit.<br>
-          An event is <i>confirmed</i> if a clinically meaningful outcome change from baseline 
-          is maintained at all visits up to the confirmation visit.<br>
-          <i>Note: larger intervals improve the stability of event detection 
-          but are likely to decrease the number of events.</i><br>"
+          "An event is <i>confirmed</i> if a clinically meaningful outcome change from baseline 
+          is maintained at all visits up to the confirmation visit.<br>"
         ),
-        HTML("<br>"),
         HTML("<hr>"),
         sliderInput(
           inputId = "conf_weeks",
-          label = "Specify the confirmation interval:",
+          label = "Specify the time interval from event onset to the confirmation visit:",
           min = 0,
           max = 96,
           value = 12,
@@ -390,14 +377,19 @@ fluidPage(
           to_min = 0,
           grid = T,
           # force_edges = T,
-          label = "Specify the tolerance window for the confirmation interval:",
+          label = "Specify the tolerance window for the confirmation interval above:",
           selected = c(-14, 14),
           choices = c(seq(-60, 60, 1), "Unlimited")
         ),
         tags$style(HTML("
               .irs--shiny .irs-shadow{
                 height: 0px;
-              }"))
+              }")),
+        
+        HTML(
+          "<i>Note: larger intervals improve the stability of event detection 
+          but are likely to decrease the number of events.</i><br>"
+        ),
         
       ),
       
@@ -515,7 +507,7 @@ fluidPage(
           
           radioButtons(
             inputId = "impute_last_visit",
-            label = "Specify the behaviour for unconfirmed disability worsening occurring at last available visit:",
+            label = "Specify the behaviour for unconfirmed disability worsening occurring at the last available visit:",
             choices = c(
               "censored (not retained as a CDW)" = 0,
               "imputed (retained as a CDW)" = 1,
@@ -561,6 +553,7 @@ fluidPage(
           onclick = 'document.getElementById("results_panel").scrollIntoView();'
         )
       )
+      
     ),
     
   ),
@@ -578,7 +571,7 @@ fluidPage(
       p(),
       h3("Results"),
       HTML(
-        '<p id = input_guide_message_all>Fill in the required input and then press the "Compute" button below to display results.</p>'
+        '<p id = input_guide_message_all>Fill in the required input, then press the "Compute" button below to display results.</p>'
       ),
       HTML(
         '<p hidden id = input_guide_message_outcome_file>Please <a href="#outcome_data_block">import outcome data</a>.</p>'
@@ -604,7 +597,18 @@ fluidPage(
       hidden(h4(id = "event_count_title", "Event count")),
       div(style = "max-height: 500px; overflow: scroll;",
           tableOutput("outputTab_details")),
-      HTML("<hr>"),
+      
+      conditionalPanel(
+        condition = "input.run_msprog > 0 && !output.has_results",
+        
+        div(
+          style = "margin-top:10px; font-weight: bold; color:#555;",
+          icon("spinner", class = "fa-spin"),
+          " Computing… This may take a few minutes for large datasets."
+        )
+      ),
+      
+      HTML("<br>"),
       hidden(
         div(
           id = "download_panel",
