@@ -9,161 +9,9 @@ library(DT)
 library(shinyBS)
 library(shinyWidgets)
 
-# Define UI for application that draws a histogram
-fluidPage(
-  
-  # Note the wrapping of the string in HTML()
-  tags$head(
-    
-    # to scroll from compute to results
-    tags$style(HTML(
-      "html{scroll-behavior: smooth;}"
-    ))),
-  
-  # Application title
-  titlePanel(title = "MSprog", windowTitle = "MSprog"),
-  
-  # Introduction block
-  HTML("
-  <p>Welcome to the MSprog web app. This page serves as a graphical interface
-  for the <a href='https://github.com/noemimontobbio/msprog/'>msprog R package</a>,
-  developed by the Biostatistics group at the Health Sciences Department (DISSAL)
-  of the University of Genoa (Genoa, Italy).</p>
-  <p>If you use MSprog in your work, please cite it as follows:</p>
-  <blockquote style='font-size: 1em' cite='https://doi.org/10.1101/2024.01.30.24302013'><b>Creating an automated tool for a consistent and repeatable evaluation of disability progression in clinical studies for Multiple Sclerosis</b><br>
-     <i>Noemi Montobbio, Luca Carmisciano, Alessio Signori, Marta Ponzano, Irene Schiavetti, Francesca Bovis, Maria Pia Sormani</i><br>
-     medRxiv 2024.01.30.24302013; <b>doi</b>: <a href='https://doi.org/10.1101/2024.01.30.24302013'>10.1101/2024.01.30.24302013</a> <br>
-     accepted for publication on MSJ on 15/03/2024
-  </blockquote><br><br>"
-  ),
-  
-  # new section
-  # title
-  HTML("<h3>The <code>MSprog</code> function</h3>"),
-  
-  # subtitle
-  h4("Compute multiple sclerosis progression from longitudinal data."),
-  
-  # description of the tool
-  HTML("Identify and characterize the progression or improvement events
-        of an outcome measure across the data of one or more subject.
-        The procedure utilizes repeated assessments
-        over time and considers the dates of acute episodes. Customize
-        results by setting qualitative and quantitative options, and
-        enhance reproducibility.<br><br>
-       <i>Please input the required information; mandatory fields are
-       marked with an asterisk (*)</i><br><br>"
-  ),
-  
-  # Sidebar
-  sidebarLayout(div(
-    sidebarPanel(
-      
-      # set the width of the sidebar to half (6/12)
-      width = 6,
-      
-      # tell frontend to load shinyjs
-      useShinyjs(),
-      
-      # Import outcome data ----------------------------------------------------
-      div(
-        id = "outcome_data_block",
-        style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
-        
-        # File
-        h4("Import outcome data*", hidden(icon("eye", id = "eye_outcome"))),
-        HTML(
-          "Choose or drag and drop here a <b>CSV or EXCEL file</b> with longitudinal
-            assessments of an outcome measure (e.g., EDSS) for one or more
-            patients"
-        ),
-        actionLink('csv_guide', label = "read more"),
-        HTML(
-          ".<br><i>Note: the outcome file should contain at least the following columns:
-            individual subject identifier (anonymized), outcome values, and date of visits.</i>"
-        ),
-        fileInput(
-          inputId = "dat",
-          label = "",
-          multiple = FALSE,
-          accept = c(".csv", ".xls", ".xlsx")
-        ),
-        
-        bsModal(
-          id = "outcomeTab_pop",
-          title =  "Outcome data",
-          trigger = "eye_outcome",
-          DT::DTOutput("inputTab")
-        ),
-        
-        # Columns
-        HTML(
-          "Specify the column names corresponding in your outcome file to the required columns.<br>"
-        ),
-        HTML("<br>"),
-        div(
-          id = "subj_col_block",
-          style = "display: inline-block;vertical-align:top; width: 30%;",
-          selectInput(
-            inputId = "subj_col",
-            label = "Subject ID",
-            choices = c("")
-          )
-        ),
-        div(
-          id = "value_col_block",
-          style = "display: inline-block;vertical-align:top; width: 30%;",
-          selectInput(
-            inputId = "value_col",
-            label = "Outcome value",
-            choices = c("")
-          )
-        ),
-        div(
-          id = "date_col_block",
-          style = "display: inline-block;vertical-align:top; width: 30%;",
-          selectInput(
-            inputId = "date_col",
-            label = "Date of visit",
-            choices = c("")
-          )
-        ),
-      ),
-      
-      # Import relapse data ----------------------------------------------------
-      # File
-      div(
-        style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
-        h4("Import relapse data (optional)", hidden(icon("eye", id = "eye_relapse"))),
-        HTML(
-          "Choose or drag and drop here a <b>CSV file</b> with the dates of
-             relapses"
-        ),
-        actionLink('csv_guide', label = "read more"),
-        HTML(
-          ".<br><i>Note: the relapse file should contain at least the following columns:
-             individual subject identifier, date of relapse.</i>"
-        ),
-        fileInput(
-          inputId = "relapse.dat",
-          label = "",
-          multiple = FALSE,
-          accept = c(".csv")
-        ),
-        
-        bsModal(
-          id = "relapseTab_pop",
-          title =  "Relapse data",
-          trigger = "eye_relapse",
-          tableOutput("relapseTab")
-        ),
-        
-        bsModal(
-          id = "csv_guide_pop",
-          title = "Guide",
-          trigger = "csv_guide",
-          HTML(
-            '<!-- Introduction -->
+csv_guide_text <- tagList(
+  HTML(
+    '<!-- Introduction -->
             <h2>CSV files</h2>
 
             <p>CSV (Comma-Separated Values) files are widely used for data storage and exchange between different software applications because of their simplicity and universality. They are commonly employed in data analysis, databases, and spreadsheet applications.</p>
@@ -233,12 +81,179 @@ fluidPage(
                                      <p>Once you\'ve successfully created a CSV file you can upload in MSprog.</p>
 
             <p><i>Tip: Use the '
-          ),
-          icon("eye", id = "eye_outcome"),
-          HTML(
-            'icon to preview your CSV data in MSprog before calculating progressions. Ensure everything looks correct before proceeding!</I></p>
-            '
+  ),
+  icon("eye", id = "eye_outcome"),
+  HTML(
+    'icon to preview your CSV data in MSprog before calculating progressions. Ensure everything looks correct before proceeding!</I></p>
+            ')
+)
+
+# Define UI for application that draws a histogram
+fluidPage(
+  
+  # Note the wrapping of the string in HTML()
+  tags$head(
+    
+    # to scroll from compute to results
+    tags$style(HTML(
+      "html{scroll-behavior: smooth;}"
+    ))),
+  
+  # Application title
+  titlePanel(title = "MSprog", windowTitle = "MSprog"),
+  
+  # Introduction block
+  HTML("
+  <p>Welcome to the MSprog web app. This page serves as a graphical interface
+  to the main function of the <a href='https://github.com/noemimontobbio/msprog/'><i>msprog</i> R package</a>,
+  developed by the Biostatistics group at the Health Sciences Department (DISSAL)
+  of the University of Genoa (Genoa, Italy).</p>"),
+  icon("book"), tags$a(href='https://github.com/noemimontobbio/msprog/blob/master/msprog.pdf',
+                       "msprog reference manual"),
+  HTML("<br><br><p>If you use the <i>msprog</i> R package or the <i>MSprog</i> web app in your work, please cite:</p>
+  <blockquote style='font-size: 1em' cite='https://doi.org/10.1177/13524585241243157'><b>Creating an automated tool for a consistent 
+  and repeatable evaluation of disability progression in clinical studies for Multiple Sclerosis</b><br>
+     <i>Noemi Montobbio, Luca Carmisciano, Alessio Signori, Marta Ponzano, Irene Schiavetti, Francesca Bovis, Maria Pia Sormani</i><br>
+     Mult Scler. 2024;30(9):1185-1192. <b>doi</b>: <a href='https://doi.org/10.1177/13524585241243157'>10.1177/13524585241243157</a>
+  </blockquote><br><br>"
+  ),
+  
+  # new section
+  # title
+  HTML("<h3>The <code>MSprog</code> function</h3>"),
+  
+  # subtitle
+  h4("Extract multiple sclerosis disability events from longitudinal data."),
+  
+  # description of the tool
+  HTML("Identify and characterise confirmed disability worsening (CDW) or improvement (CDI) events
+        of an outcome measure across the data of one or more subjects.
+        The procedure utilizes repeated clinical assessments over time 
+        and considers the dates of acute episodes, if provided. 
+        Customize results by setting qualitative and quantitative options, and
+        enhance reproducibility.<br><br>
+       <i>Please input the required information; <span style='color:red;'>mandatory fields are
+       marked with an asterisk (*)</span></i><br><br>"
+  ),
+  
+  # Sidebar
+  sidebarLayout(div(
+    sidebarPanel(
+      
+      # set the width of the sidebar to half (6/12)
+      width = 6,
+      
+      # tell frontend to load shinyjs
+      useShinyjs(),
+      
+      # Import outcome data ----------------------------------------------------
+      div(
+        id = "outcome_data_block",
+        style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
+        
+        # File
+        h4(
+          "Import outcome data", tags$span("*", style = "color: red;"),
+          hidden(icon("eye", id = "eye_outcome"))
+        ),
+        HTML(
+          "Choose or drag and drop here a <b>CSV or EXCEL file</b>"
+        ),
+        actionLink('csv_guide_outcome', label = "(read more)"),
+        HTML(
+          "with longitudinal assessments of an outcome measure (e.g., EDSS) for one or more
+            patients (one row per subject per visit).<br>
+            <i>Note: the outcome file should contain at least the following columns:
+            individual subject identifier (anonymised), outcome values, and date of visits.</i>"
+        ),
+        fileInput(
+          inputId = "dat",
+          label = "",
+          multiple = FALSE,
+          accept = c(".csv", ".xls", ".xlsx")
+        ),
+        
+        bsModal(
+          id = "outcomeTab_pop",
+          title =  "Outcome data",
+          trigger = "eye_outcome",
+          DT::DTOutput("inputTab")
+        ),
+        
+        bsModal(
+          id = "csv_guide_outcome_pop",
+          title = "Guide",
+          trigger = "csv_guide_outcome",
+          csv_guide_text
+        ),
+        
+        # Columns
+        HTML(
+          "Specify the column names corresponding in your outcome file to the required columns.<br>"
+        ),
+        HTML("<br>"),
+        div(
+          id = "subj_col_block",
+          style = "display: inline-block;vertical-align:top; width: 30%;",
+          selectInput(
+            inputId = "subj_col",
+            label = "Subject ID",
+            choices = c("")
           )
+        ),
+        div(
+          id = "value_col_block",
+          style = "display: inline-block;vertical-align:top; width: 30%;",
+          selectInput(
+            inputId = "value_col",
+            label = "Outcome value",
+            choices = c("")
+          )
+        ),
+        div(
+          id = "date_col_block",
+          style = "display: inline-block;vertical-align:top; width: 30%;",
+          selectInput(
+            inputId = "date_col",
+            label = "Date of visit",
+            choices = c("")
+          )
+        )
+      ),
+      
+      # Import relapse data ----------------------------------------------------
+      # File
+      div(
+        style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
+        h4("Import relapse data (optional)", hidden(icon("eye", id = "eye_relapse"))),
+        HTML(
+          "Choose or drag and drop here a <b>CSV or EXCEL file</b>"
+        ),
+        actionLink('csv_guide_relapse', label = "(read more)"),
+        HTML(
+          "with the dates of relapses (one row per subject per relapse).<br>
+          <i>Note: the relapse file should contain at least the following columns:
+             individual subject identifier, date of relapse.</i>"
+        ),
+        fileInput(
+          inputId = "relapse.dat",
+          label = "",
+          multiple = FALSE,
+          accept = c(".csv", ".xls", ".xlsx")
+        ),
+        
+        bsModal(
+          id = "relapseTab_pop",
+          title =  "Relapse data",
+          trigger = "eye_relapse",
+          DT::DTOutput("relapseTab")  #tableOutput("relapseTab")
+        ),
+        
+        bsModal(
+          id = "csv_guide_relapse_pop",
+          title = "Guide",
+          trigger = "csv_guide_relapse",
+          csv_guide_text
         ),
         
         # Columns
@@ -264,21 +279,19 @@ fluidPage(
         )
       ),
       
+      HTML("<p><i><b>Tip: After uploading your data, use the "),
+      icon("eye", id = "eye_outcome"),
+      HTML('icon to preview your data in MSprog.
+           Ensure everything looks correct before proceeding!</b></i></p>'),
+      
       # Outcome ----------------------------------------------------------------
       div(
         id = "outcome_type_block",
         style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
-        h4("Outcome definition*"),
-        HTML(
-          "Specify the outcome type.
-               <br>This selection determines the minimum shift corresponding to
-               a valid change from baseline in the outcome value
-               (e.g., for NHPT, 20% of value at baseline).<br>"
-        ),
-        HTML("<br>"),
+        h4("Outcome definition", tags$span("*", style = "color: red;")),
         radioButtons(
           inputId = "outcome",
-          label = "Pick one of the options",
+          label = "Specify the outcome type:",
           choices = c(
             "Expanded Disability Status Scale (EDSS)" = "edss",
             "Nine-Hole Peg Test (NHPT)" = "nhpt",
@@ -286,6 +299,15 @@ fluidPage(
             "Symbol Digit Modalities Test (SDMT)" = "sdmt"
           ),
           selected = NA
+        ),
+        HTML(
+          "<i>Note: this selection determines the direction of worsening (increase for EDSS, NHPT, and T25FW; 
+          decrease for SDMT) and the minimum accepted clinically meaningful change given the reference value. 
+          Specifically:<ul>
+  <li>EDSS: 1.5 if baseline=0; 1.0 if 0 &lt; baseline &le; 5.0; 0.5 if baseline &gt; 5.0 (<a href='https://doi.org/10.1056/nejmoa2415988'>Fox 2025</a>)</li>
+  <li>NHPT and T25FW: 20% of baseline (<a href='https://doi.org/10.1177/1352458510370464'>Bosma 2010</a>)</li>
+  <li>SDMT: either 3 points or 10% of baseline (<a href='https://doi.org/10.1177/1352458518808204'>Strober 2018</a>).
+  </ul></i>"
         )
       ),
       
@@ -293,21 +315,19 @@ fluidPage(
       div(
         style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
         h4("Event definition"),
-        HTML("Specify the event setting of interest.<br>"),
-        HTML("<br>"),
         radioButtons(
           inputId = "event",
-          label = "Pick one of the options",
+          label = "Specify the event setting of interest:",
           choices = c(
-            "First progression" = "firstprog",
-            "First relapse-associated worsening (RAW)" = "firstRAW",
+            "First CDW" = "firstCDW",
+            "All events, detected sequentially" = "multiple",
             "First progression independent of relapse activity (PIRA)" = "firstPIRA",
-            "First progression of each kind (PIRA, RAW, and undefined), in chronological order" = "firstprogtype",
-            "First improvement and first progression, in chronological order" = "firsteach",
-            "Only the very first event (improvement or progression)" = "first",
-            "All events, in chronological order" = "multiple"
+            "First relapse-associated worsening (RAW)" = "firstRAW",
+            "Only the very first event (CDW or CDI)" = "first",
+            "First CDI and first CDW, in chronological order" = "firsteach",
+            "First CDW of each kind (PIRA, RAW, and undefined CDW), in chronological order" = "firstCDWtype"
           ),
-          selected = "firstprog"
+          selected = "firstCDW"
         )
       ),
       
@@ -315,21 +335,15 @@ fluidPage(
       div(
         style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
         h4("Baseline definition"),
-        HTML(
-          "Specify a baseline scheme. <br>
-                  <i>Note: to discard fluctuations around baseline for a
-                first-progression setting, the second option is more suitable, while
-                for a multiple-event setting the third option is more suitable.</i><br>"
-        ),
-        HTML("<br>"),
         radioButtons(
           inputId = "baseline",
-          label = "Pick one of the options",
+          label = "Specify a baseline scheme:",
           choices = c(
-            "First valid outcome value" = "fixed",
-            "Updated every time the value is lower than the previous
-                measure and confirmed at the following visit" = "roving_impr",
-            "Updated after each event to last valid confirmed outcome value" = "roving"
+            "Fixed: first eligible visit in the data" = "fixed",
+            "Roving: updated after each CDW or CDI (suitable for a multiple-event setting; 
+            not recommended for randomised data)" = "roving",
+            "Roving (CDI-only): updated after each CDI (suitable for discarding fluctuations around baseline in a
+                first-CDW setting; not recommended for multiple events or randomised data)" = "roving_impr"
           ),
           selected = "fixed"
         )
@@ -340,33 +354,21 @@ fluidPage(
         style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
         h4("Confirmation definition"),
         HTML(
-          "Confirmation is defined as an
-                 event assessed within a specific time interval from the event onset.
-                 <br><i>Note: larger intervals improve the stability of event detection but are likely to decrease the number of events'.</i><br>"
+          "An event is <i>confirmed</i> if a clinically meaningful outcome change from baseline 
+          is maintained at all visits up to the confirmation visit.<br>"
         ),
-        HTML("<br>"),
         HTML("<hr>"),
         sliderInput(
           inputId = "conf_weeks",
-          label = "Specify the confirmation interval",
+          label = "Specify the time interval from event onset to the confirmation visit:",
           min = 0,
           max = 96,
           value = 12,
           step = 1,
-          post = " weeks"
+          post = " weeks",
         ),
         
         HTML("<hr>"),
-        # sposta conf_tol_days dx
-        # radioButtons(
-        #   inputId = "conf_unbounded_right",
-        #   label = 'Do you want the confirmation window to be unbounded on
-        #   the right? (e.g., "confirmed at 12 weeks or more")',
-        #   choices = c("Yes" = T, "No" = F),
-        #   selected = NA
-        #   ),
-        #
-        # HTML("<hr>"),
         
         shinyWidgets::sliderTextInput(
           inputId = "conf_tol_days",
@@ -375,105 +377,170 @@ fluidPage(
           to_min = 0,
           grid = T,
           # force_edges = T,
-          label = "Specify the tolerance window for the confirmation interval",
+          label = "Specify the tolerance window for the confirmation interval above:",
           selected = c(-14, 14),
-          choices = c("-60", seq(-60, 60, 1), "Unbound")
+          choices = c(seq(-60, 60, 1), "Unlimited")
         ),
         tags$style(HTML("
               .irs--shiny .irs-shadow{
                 height: 0px;
               }")),
         
+        HTML(
+          "<i>Note: larger intervals improve the stability of event detection 
+          but are likely to decrease the number of events.</i><br>"
+        ),
+        
       ),
       
-      # Other ------------------------------------------------------------------
+      # Advanced ---------------------------------------------------------------
       hidden(
+          
         div(
           id = 'advancedbox',
           style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
+
+          radioButtons(
+            inputId = "proceed_from",
+            label = "After detecting a confirmed disability event, continue searching:",
+            choices = c(
+              "from the next visit after the first qualifying confirmation visit" = "firstconf",
+              "from the next visit after the event onset" = "event"
+            ),
+            selected = "firstconf"
+          ),
+          HTML("<i>Note: this has no effect in a first-event setting.</i>"),
+          
+          HTML("<hr>"),
+          
+          div(
+            id = "validconf_block",
+            selectInput(
+              inputId = "validconf_col",
+              label = "Name of (optional) column in the data specifying which visits 
+              can (TRUE/1) or cannot (FALSE/0) be used as confirmation:",
+              choices = c("")
+            )
+            ),
+          
+          HTML("<hr>"),
+          
           numericInput(
             "require_sust_weeks",
-            "Minimum number of weeks for which a confirmed change must be sustained to be retained as an event.",
+            "Minimum number of weeks over which a confirmed change must be sustained 
+            (i.e., clinically meaningful change maintained at all visits occurring in the specified period)
+            to be retained as an event:",
             min = 0,
-            max = 53,
             value = 0,
             step = 1
           ),
           
+          checkboxInput(
+            inputId = "require_sust_inf",
+            label = "Only retain events sustained up to end of follow-up",
+            value = FALSE
+          ),
+          
+          HTML("<i>Note: events sustained for the remainder of the follow-up period 
+                are always retained regardless of follow-up duration 
+               (e.g., if 48 weeks is entered above and follow-up ends after 36 weeks from event onset).</i>"),
+          
+          HTML("<hr>"),
+          
           numericInput(
             "relapse_to_bl",
-            "Minimum distance from last relapse (days) for a visit to be used as baseline (otherwise the next available visit is used as baseline).",
+            "Minimum distance from last relapse (days) for a visit to be used as baseline 
+            (otherwise the baseline is moved to the next eligible visit):",
             min = 0,
-            max = 365,
+            max = 731,
             value = 30,
             step = 30
           ),
           
+          HTML("<hr>"),
+          
           numericInput(
             "relapse_to_event",
-            "Minimum distance from last relapse (days) for an event to be considered as such.",
+            "Minimum distance from last relapse (days) to event onset:",
             min = 0,
-            max = 365,
+            max = 731,
             value = 0,
             step = 30
           ),
           
+          HTML("<hr>"),
+          
           numericInput(
             "relapse_to_conf",
-            "Minimum distance from last relapse (days) for a visit to be a valid confirmation visit.",
+            "Minimum distance from last relapse (days) for a visit to be a valid confirmation visit:",
             min = 0,
-            max = 365,
+            max = 731,
             value = 30,
             step = 30
           ),
           
+          HTML("<hr>"),
+          
           numericInput(
             "relapse_assoc",
-            "Maximum distance from last relapse (days) for a progression event to be considered as RAW.",
+            "Relapse-associated worsening (RAW) is defined as a CDW whose onset occurs within
+            a specified interval from a previous relapse. Interval length (in days) can be modified below:",
             min = 0,
             max = 365,
             value = 90,
-            step = 30
+            step = 30,
           ),
           
-          radioButtons(
-            inputId = "check_intermediate",
-            label = "Check for confirmation over all intermediate visits up to the confirmation visit.",
-            choices = c(
-              "Yes (reccomendend)" = TRUE,
-              "No" = FALSE
-            ),
-            selected = TRUE
-          ),
+          HTML("<hr>"),
+          
+          # radioButtons(
+          #   inputId = "check_intermediate",
+          #   label = "Check for confirmation over all intermediate visits up to the confirmation visit?",
+          #   choices = c(
+          #     "Yes (reccomendend)" = TRUE,
+          #     "No" = FALSE
+          #   ),
+          #   selected = TRUE
+          # ),
+          # 
+          # HTML("<hr>"),
           
           radioButtons(
-            inputId = "prog_last_visit",
-            label = "Include progressions occurring at last visit (i.e. with no confirmation)",
+            inputId = "impute_last_visit",
+            label = "Specify the behaviour for unconfirmed disability worsening occurring at the last available visit:",
             choices = c(
-              "Yes" = TRUE,
-              "No" = FALSE
+              "censored (not retained as a CDW)" = 0,
+              "imputed (retained as a CDW)" = 1,
+              "Random mixture of censoring and imputation (specify imputation probability below)" = "mix"
             ),
-            selected = FALSE
+            selected = 0
           ),
+          
+          numericInput(
+            "impute_prob",
+            "Imputation probability (enter a value between 0 and 1):",
+            min = 0,
+            max = 1,
+            value = .5,
+            step = .05
+          ),
+          
+          HTML("<hr>"),
+          
           # selectInput(
           #   "subjects",
           #   "Subset of subjects to include",
           #   choices = c("Include all")
           # ),
           
-          numericInput(
-            "min_value",
-            "Only include progression events with outcome value not lower than threshold",
-            value = NULL
-          ),
         )
       ),
       
       div(
         style = "text-align: center; margin:10px",
-        actionButton(inputId = "advenced_button_on", label = "Advanced settings"),
+        actionButton(inputId = "advanced_button_on", label = "Advanced settings"),
         hidden(
-          actionButton(inputId = "advenced_button_off", label = "Close advanced settings")
+          actionButton(inputId = "advanced_button_off", label = "Close advanced settings")
         )
       ),
       
@@ -486,17 +553,17 @@ fluidPage(
           onclick = 'document.getElementById("results_panel").scrollIntoView();'
         )
       )
+      
     ),
     
   ),
   
   
   
-  # which information do you want to download:
+  # Information downloaded:
   # 1. Extended event report [csv ottenuto da results(output)]
   # 2. Event count [csv ottenuto da event_count(output)]
-  # 3. Textual description of criteria used, to be reported to
-  # ensure reproducibility
+  # 3. Textual description of criteria used, to be reported to ensure reproducibility
   mainPanel(
     width = 6,
     div(
@@ -504,7 +571,7 @@ fluidPage(
       p(),
       h3("Results"),
       HTML(
-        '<p id = input_guide_message_all>Fill in the required input and then press the "Compute" button to see results.</p>'
+        '<p id = input_guide_message_all>Fill in the required input, then press the "Compute" button below to display results.</p>'
       ),
       HTML(
         '<p hidden id = input_guide_message_outcome_file>Please <a href="#outcome_data_block">import outcome data</a>.</p>'
@@ -530,12 +597,31 @@ fluidPage(
       hidden(h4(id = "event_count_title", "Event count")),
       div(style = "max-height: 500px; overflow: scroll;",
           tableOutput("outputTab_details")),
+      
+      conditionalPanel(
+        condition = "input.run_msprog > 0 && !output.has_results",
+        
+        div(
+          style = "margin-top:10px; font-weight: bold; color:#555;",
+          icon("spinner", class = "fa-spin"),
+          " Computing… This may take a few minutes for large datasets."
+        )
+      ),
+      
+      HTML("<br>"),
       hidden(
-        div(id = "download_panel", style = "text-align: center",
-            inputPanel(downloadButton(outputId = "download")))
+        div(
+          id = "download_panel",
+          downloadButton(
+            outputId = "download",
+            label = "Download full individual-patient results (.xlsx)",
+            class = "btn-primary btn-block"
+          )
+        )
       )
     )
-  ),),
+  )
+  ),
   
   # Footer
   HTML(

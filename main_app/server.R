@@ -7,8 +7,10 @@
 #    https://shiny.posit.co/
 #
 
-# install msprog package
-# devtools::install_github("noemimontobbio/msprog")
+# if (!requireNamespace("msprog", quietly = TRUE) ||
+#     utils::packageVersion("msprog") < "0.2.2") {
+#   remotes::install_github("noemimontobbio/msprog", upgrade = "never")
+# }
 
 # load libraries
 library(shiny)   # to run the web app
@@ -35,23 +37,24 @@ function(input, output, session) {
   # Data loader ----------------------------------------------------
   
   # CSV format loader
-  load.csv <- function() {
+  load.csv <- function(file) {
     # read the csv source and skip row names
     read.csv(
-      file = input$dat$datapath,
+      file = file$datapath,  #input$dat$datapath,
       header = TRUE,
       row.names = NULL,
       sep = ",",
       strip.white = TRUE,
       na.strings = ""
-    )[,-1]
+    ) #[,-1]  #drop index row
   }
   
   # xls and xlsx format loader
-  load.excel <- function() {
-    # read the csv source and skip row names
+  load.excel <- function(file) {
+    # read the excel source
     readxl::read_excel(
-      path = input$dat$datapath)
+      path = file$datapath  #input$dat$datapath
+      )
   }
   
   ## Event data ----------------------------------------------------
@@ -81,9 +84,10 @@ function(input, output, session) {
 
     # assign file to reader based on format
     switch (stringr::str_extract(input$dat$name, "(?<=\\.)[^\\.]*?$"),
-            "csv" = load.csv(),
-            "xlsx" = load.excel(),
-            "xls" = load.excel(),
+            "csv" = load.csv(input$dat),
+            "xlsx" = load.excel(input$dat),
+            "xls" = load.excel(input$dat),
+            validate("Invalid file; Please upload a .csv, .xls, or .xlsx")
     )
   })
   
@@ -94,19 +98,20 @@ function(input, output, session) {
     # since is optional return null if file was not uploaded
     if(is.null(input$relapse.dat)) return(NULL)
 
-    # check if the format is .csv
-    if (!endsWith(input$relapse.dat$name, ".csv")) {
-      # otherwise prompt an error
-      validate("Invalid file; Please upload a .csv")
-    }
+    # # check if the format is .csv
+    # if (!endsWith(input$relapse.dat$name, ".csv")) {
+    #   # otherwise prompt an error
+    #   validate("Invalid file; Please upload a .csv")
+    # }
     
-    # read the csv source and skip row names
-    read.csv(input$relapse.dat$datapath,
-             header = TRUE, 
-             row.names = NULL,
-             sep = ",",
-             strip.white = TRUE,
-             na.strings = "")[,-1]
+    # assign file to reader based on format
+    switch (stringr::str_extract(input$relapse.dat$name, "(?<=\\.)[^\\.]*?$"),
+            "csv" = load.csv(input$relapse.dat),
+            "xlsx" = load.excel(input$relapse.dat),
+            "xls" = load.excel(input$relapse.dat),
+            validate("Invalid file; Please upload a .csv, .xls, or .xlsx")
+    )
+    
   })
   
   # Column selection -----------------------------------------------
@@ -135,6 +140,14 @@ function(input, output, session) {
     updateSelectInput(
       session = session, 
       inputId = 'date_col', 
+      choices  = c("", names(dat()))
+    )
+    
+    # update the corresponding select input of validconf_col with the 
+    # column names of the event data frame
+    updateSelectInput(
+      session = session, 
+      inputId = 'validconf_col', 
       choices  = c("", names(dat()))
     )
     
@@ -169,29 +182,45 @@ function(input, output, session) {
   # Advance settings ----------------------------------------------------
   
   # when opening advance button is pressed
-  observeEvent(input$advenced_button_on, {
+  observeEvent(input$advanced_button_on, {
     
     # show advance setting
     shinyjs::show(id = "advancedbox")
     
     # show the button to close advance setting
-    shinyjs::show(id = "advenced_button_off")
+    shinyjs::show(id = "advanced_button_off")
     
     # hide the button to open advance setting
-    shinyjs::hide(id = "advenced_button_on")
+    shinyjs::hide(id = "advanced_button_on")
   })
   
   # when closing advance button is pressed
-  observeEvent(input$advenced_button_off, {
+  observeEvent(input$advanced_button_off, {
     
     # hide advance setting
     shinyjs::hide(id = "advancedbox")
     
     # show the button to open advance setting
-    shinyjs::show(id = "advenced_button_on")
+    shinyjs::show(id = "advanced_button_on")
     
     # hide the button to close advance setting
-    shinyjs::hide(id = "advenced_button_off")
+    shinyjs::hide(id = "advanced_button_off")
+  })
+  
+  observeEvent(input$require_sust_inf, {
+    if (isTRUE(input$require_sust_inf)) {
+      shinyjs::disable("require_sust_weeks")
+    } else {
+      shinyjs::enable("require_sust_weeks")
+    }
+  })
+  
+  observeEvent(input$impute_last_visit, {
+    if (input$impute_last_visit == "mix") {
+      shinyjs::enable("impute_prob")
+    } else {
+      shinyjs::disable("impute_prob")
+    }
   })
   
   # User messages --------------------------------------------------------
@@ -203,9 +232,9 @@ function(input, output, session) {
   })
   
   # if relapse data is not uploaded ask for relapse data
-  output$relapseTab <- renderTable({
+  output$relapseTab <- DT::renderDataTable({
     if(is.null(relapse.dat())) "Relapse data not uploaded"
-    relapse.dat()
+    DT::datatable(relapse.dat())
   })
   
   # if relapse subject column is not uploaded ask for relapse subject column
@@ -282,45 +311,84 @@ function(input, output, session) {
     shinyjs::show(id = "criteria_description_title")
     shinyjs::show(id = "event_count_title")
     
+    conf_tol_days <- suppressWarnings(as.numeric(input$conf_tol_days))
+    conf_tol_days[is.na(conf_tol_days)] <- Inf  # if second value is "Unlimited", it gets converted to Inf
+    
+    require_sust_weeks <- ifelse(isTRUE(input$require_sust_inf), Inf, input$require_sust_weeks)
+    
+    impute_last_visit <- as.numeric(ifelse(input$impute_last_visit == "mix", 
+                                           input$impute_prob, input$impute_last_visit))
+    
     # actually compute
-    capture.msprog(
+    args <- list(
       data = dat(),
       subj_col = input$subj_col,
       value_col = input$value_col,
       date_col = input$date_col,
       outcome = input$outcome,
-      subjects = NULL,
       relapse = relapse.dat(),
       rsubj_col = rsubj_col(),
       rdate_col = rdate_col(),
-      delta_fun = NULL,
-      conf_weeks = input$conf_weeks,
-      conf_tol_days = abs(as.numeric(input$conf_tol_days)),
-      conf_unbounded_right = input$conf_tol_days[2] == "Unbound",
-      require_sust_weeks = input$require_sust_weeks,
+      #renddate_col
+      #subjects
+      #delta_fun
+      #worsening
+      #event: conditionally included
+      #baseline: conditionally included
+      #proceed_from: conditionally included
+      #sub_threshold_rebl
+      #bl_geq
+      #relapse_rebl: conditionally included
+      #skip_local_extrema
+      #validconf_col: conditionally included
+      conf_days = input$conf_weeks*7,
+      conf_tol_days = abs(conf_tol_days),  #abs(as.numeric(input$conf_tol_days)),
+      require_sust_days = require_sust_weeks*7,
+      #check_intermediate
       relapse_to_bl = input$relapse_to_bl,
       relapse_to_event = input$relapse_to_event,
       relapse_to_conf = input$relapse_to_conf,
       relapse_assoc = input$relapse_assoc,
-      event = ifelse(is.null(input$event), "firstprog", input$event),
-      baseline = ifelse(is.null(input$baseline), "fixed", input$baseline),
-      relapse_indep = NULL,
-      sub_threshold = FALSE,
-      relapse_rebl = FALSE,
-      min_value = switch(is.null(input$min_value), NULL, input$min_value),
-      prog_last_visit = as.logical(input$prog_last_visit),
-      check_intermediate = as.logical(input$check_intermediate),
+      #relapse_indep (add?)
+      impute_last_visit = impute_last_visit,
       include_dates = TRUE,
       include_value = TRUE,
       include_stable = TRUE,
       verbose = 0
-    ) 
+    )
+    
+    # Conditionally include arguments ONLY if user set them
+    if (!is.null(input$event)) {
+      args$event <- input$event
+    }
+    if (!is.null(input$baseline)) {
+      args$baseline <- input$baseline
+    }
+    if (!is.null(input$proceed_from)) {
+      args$baseline <- input$baseline
+    }
+    if (!is.null(input$relapse_rebl)) {
+      args$baseline <- input$baseline
+    }
+    if (!is.null(input$validconf_col) && nzchar(input$validconf_col)) {
+      args$validconf_col <- input$validconf_col
+    }
+    
+    #Sys.sleep(10)
+    do.call(capture.msprog, args)
+    
   }),
   
   # bind the previous function is to user pressing the compute button.
   # [note: this is a custom behavior]
-  # [note: shiny is force not to auto-update]
+  # [note: shiny is forced not to auto-update]
   input$run_msprog)
+  
+  output$has_results <- reactive({
+    !is.null(progs())
+  })
+  outputOptions(output, "has_results", suspendWhenHidden = FALSE)
+  
   
   # generate the results data.frame
   output$outputTab_details <- renderTable({
@@ -348,18 +416,32 @@ function(input, output, session) {
     outs
   })
 
-  # write a message to user in HTML
+  # # write a message to user in HTML
+  # output$messages <- renderUI({
+  #   HTML(paste0(
+  #     # display textual description of criteria
+  #     capture.criteria_text(progs()$result)$output, 
+  #     
+  #     # of MSprog messages
+  #     paste(print(progs()$result), collapse = "</br>"), "</p>"))
+  # })
   output$messages <- renderUI({
-    HTML(paste0(
-      # add a paragraph on textual criteria
-      "<p>",capture.criteria_text(progs()$result)$output, 
+    tagList(
       
-      # and a second spaced paragraph
-      "</p><br><p>",
+      div(
+        style = "white-space: pre-wrap;",
+        capture.criteria_text(progs()$result)$output
+      ),
       
-      # of MSprog messages
-      paste(print(progs()$result), collapse = "</br>"),"</p>"))
+      tags$br(), tags$br(),
+      
+      HTML(
+        paste(print(progs()$result), collapse = "<br>")
+      )
+    )
   })
+  
+  
   
   # enable user to download the computed progressions
   output$download <- downloadHandler(
