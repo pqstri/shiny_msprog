@@ -21,6 +21,8 @@ library(shinyBS) # to include alert and multiple pages
 library(msprog)  # to compute progression
 library(DT)      # to visualize imported data
 
+options(shiny.fullstacktrace = TRUE)  # to report code line in logs when error occurs
+
 # Define server logic required to draw a histogram
 function(input, output, session) {
   
@@ -253,7 +255,9 @@ function(input, output, session) {
   update.user.input.message <- reactive({
     
     # start making all invisible
+    # 1) Initial message
     shinyjs::hide(id = "input_guide_message_all")
+    # 2) Required info (if adding/deleting, modify output.inputs_complete flag too!!)
     shinyjs::hide(id = "input_guide_message_outcome_file")
     shinyjs::hide(id = "input_guide_message_outcome_definition")
     shinyjs::hide(id = "input_guide_message_outcome_idcol")
@@ -261,9 +265,11 @@ function(input, output, session) {
     shinyjs::hide(id = "input_guide_message_outcome_datecol")
     
     # ask only if necessary
+    # 1) Initial message
     if (is.null(input$dat) & is.null(input$outcome)) {
       shinyjs::show(id = "input_guide_message_all")
     } else {
+      # 2) Required info (if adding/deleting, modify output.inputs_complete flag too!!)
       if (is.null(input$dat)) {
         shinyjs::show(id = "input_guide_message_outcome_file")
       } else {
@@ -375,7 +381,16 @@ function(input, output, session) {
     }
     
     #Sys.sleep(10)
-    do.call(capture.msprog, args)
+    tryCatch({
+      do.call(capture.msprog, args)
+    }, error = function(e) {
+      showModal(modalDialog(
+        title = "Computation failed",
+        paste("Error:", conditionMessage(e)),
+        easyClose = TRUE
+      ))
+      return(NULL)
+    })
     
   }),
   
@@ -384,36 +399,53 @@ function(input, output, session) {
   # [note: shiny is forced not to auto-update]
   input$run_msprog)
   
+  # For "Computing..." message:
+  # 1) required info completed
+  output$inputs_complete <- reactive({
+    !is.null(input$dat) &&
+      nzchar(input$subj_col) &&
+      nzchar(input$value_col) &&
+      nzchar(input$date_col) &&
+      !is.null(input$outcome)
+  })
+  outputOptions(output, "inputs_complete", suspendWhenHidden = FALSE)
+  # 2) results computed
   output$has_results <- reactive({
     !is.null(progs())
   })
   outputOptions(output, "has_results", suspendWhenHidden = FALSE)
   
-  
-  # generate the results data.frame
-  output$outputTab_details <- renderTable({
+  # Event count
+  event_count_tbl <- reactive({
+    req(progs()) # skip output reading if computation failed
     
     # read the msprog summary results table
-    outs <- progs()$result$event_count
-    
-    # adapt the output to different calculations behavior
+    event_count <- progs()$result$event_count
     # use row names as a subject identifier column
-    outs <- tibble::rownames_to_column(outs)
+    event_count <- tibble::rownames_to_column(
+      as.data.frame(event_count),
+      var = input$subj_col
+    )
     
-    # rename the "rowname" column using the same column name of the original data source
-    if("rowname" %in% names(outs)) {
-      names(outs)[which(names(outs) == "rowname")] <- input$subj_col
+    # If only one event column, rename it to the selected event type
+    if (ncol(event_count) == 2) {
+      names(event_count)[2] <- input$event
     }
     
-    # in case the result table has only two columns
-    if(length(names(outs)) == 2) {
-      
-      # name the second one as the selected event type
-      names(outs)[2] <- input$event
-    }
+    # Convert all count columns to integer
+    count_cols <- setdiff(names(event_count), c(input$subj_col, 'event_sequence'))
+    event_count[count_cols] <- lapply(event_count[count_cols], as.integer)
     
-    # visualize the data.frame
-    outs
+    event_count
+  })
+  
+  # Render event count table
+  output$outputTab_details <- renderTable({
+    
+    req(event_count_tbl()) # skip output reading if computation failed
+    
+    # visualize the table
+    event_count_tbl()
   })
 
   # # write a message to user in HTML
@@ -426,8 +458,8 @@ function(input, output, session) {
   #     paste(print(progs()$result), collapse = "</br>"), "</p>"))
   # })
   output$messages <- renderUI({
+    req(progs())
     tagList(
-      
       div(
         style = "white-space: pre-wrap;",
         capture.criteria_text(progs()$result)$output
@@ -453,21 +485,36 @@ function(input, output, session) {
     
     # create a multi sheet excel file
     content = function(file) {
-      writexl::write_xlsx(list(
-          
-          # with criteria in the first sheet
-          "Criteria" = data.frame(Description = capture.criteria_text(progs()$result)$output), 
-          
-          # MSprog summary results in the second sheet
-          "Event count" = setNames(cbind(
-            unique(dat()[, input$subj_col]), # ask noemi
-            progs()$result$event_count), 
-            c(input$subj_col, names(progs()$result$event_count))),
-          
-          # and MSprog detailed results in the third sheet
-          "Event details" = progs()$result$results
-        ),
-        path = file)
+      
+      tryCatch({
+        writexl::write_xlsx(list(
+            
+            # with criteria in the first sheet
+            "Criteria" = data.frame(Description = capture.criteria_text(progs()$result)$output), 
+            
+            # MSprog summary results in the second sheet
+            "Event count" = event_count_tbl(),
+            # "Event count" = setNames(cbind(
+            #   unique(dat()[, input$subj_col]), # ask noemi
+            #   progs()$result$event_count),
+            #   c(input$subj_col, names(progs()$result$event_count))),
+            
+            
+            # and MSprog detailed results in the third sheet
+            "Event details" = progs()$result$results
+          ),
+          path = file)
+      }, error = function(e) {
+        
+        showModal(modalDialog(
+          title = "Download failed",
+          paste("Error:", conditionMessage(e)),
+          easyClose = TRUE
+        ))
+        
+        # Important: still stop so Shiny knows download failed
+        stop(e)
+      })
     }
   )
   

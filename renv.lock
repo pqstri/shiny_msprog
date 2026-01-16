@@ -1353,7 +1353,7 @@
     },
     "msprog": {
       "Package": "msprog",
-      "Version": "0.2.2",
+      "Version": "0.2.3",
       "Source": "GitHub",
       "Type": "Package",
       "Title": "Compute MS Progression from Longitudinal Data",
@@ -1383,7 +1383,7 @@
       "RemoteUsername": "noemimontobbio",
       "RemoteRepo": "msprog",
       "RemoteRef": "master",
-      "RemoteSha": "ac4dc7ac14249f8619fe4520cc3d8c6a20ad1c6e"
+      "RemoteSha": "27abf3c6feb758afd9b6e236a1388dc6e145b772"
     },
     "openssl": {
       "Package": "openssl",

@@ -320,12 +320,11 @@ fluidPage(
           label = "Specify the event setting of interest:",
           choices = c(
             "First CDW" = "firstCDW",
+            "First CDI" = "firstCDI",
             "All events, detected sequentially" = "multiple",
             "First progression independent of relapse activity (PIRA)" = "firstPIRA",
             "First relapse-associated worsening (RAW)" = "firstRAW",
-            "Only the very first event (CDW or CDI)" = "first",
-            "First CDI and first CDW, in chronological order" = "firsteach",
-            "First CDW of each kind (PIRA, RAW, and undefined CDW), in chronological order" = "firstCDWtype"
+            "Only the very first event (CDW or CDI)" = "first"
           ),
           selected = "firstCDW"
         )
@@ -377,9 +376,10 @@ fluidPage(
           to_min = 0,
           grid = T,
           # force_edges = T,
-          label = "Specify the tolerance window for the confirmation interval above:",
-          selected = c(-14, 14),
-          choices = c(seq(-60, 60, 1), "Unlimited")
+          label = "Specify the tolerance window for the confirmation interval above 
+          (slide to the right end of the bar for \"no upper bound\")",
+          selected = c(-7, 365 * 2),
+          choices = c(seq(-60, 365 * 3, 1), "Unlimited")
         ),
         tags$style(HTML("
               .irs--shiny .irs-shadow{
@@ -409,7 +409,7 @@ fluidPage(
             ),
             selected = "firstconf"
           ),
-          HTML("<i>Note: this has no effect in a first-event setting.</i>"),
+          HTML("<i>Note: this only applies in a multiple-event setting.</i>"),
           
           HTML("<hr>"),
           
@@ -573,11 +573,13 @@ fluidPage(
       HTML(
         '<p id = input_guide_message_all>Fill in the required input, then press the "Compute" button below to display results.</p>'
       ),
+      
+      # REQUIRED INFO (if adding/deleting, modify output.inputs_complete flag in server too!!)
       HTML(
         '<p hidden id = input_guide_message_outcome_file>Please <a href="#outcome_data_block">import outcome data</a>.</p>'
       ),
       HTML(
-        '<p hidden id = input_guide_message_outcome_definition>Please <a href="#outcome_type_block">select outcome data</a>.</p>'
+        '<p hidden id = input_guide_message_outcome_definition>Please <a href="#outcome_type_block">select outcome type</a>.</p>'
       ),
       HTML(
         '<p hidden id = input_guide_message_outcome_idcol>Please specify the column names corresponding in your outcome file to the <a href="#subj_col_block">subject identifier column</a>.</p>'
@@ -589,17 +591,22 @@ fluidPage(
         '<p hidden id = input_guide_message_outcome_datecol>Please specify the column names corresponding in your outcome file to the <a href="#date_col_block">date of visits column</a>.</p>'
       ),
       
+      # Criteria
       hidden(
         h4(id = "criteria_description_title", "Description of criteria")
       ),
       htmlOutput("messages"),
       
+      # Event count
       hidden(h4(id = "event_count_title", "Event count")),
       div(style = "max-height: 500px; overflow: scroll;",
           tableOutput("outputTab_details")),
       
+      # "Computing..." spinner
       conditionalPanel(
-        condition = "input.run_msprog > 0 && !output.has_results",
+        condition = "input.run_msprog > 0 
+                      && output.inputs_complete
+                      && !output.has_results",
         
         div(
           style = "margin-top:10px; font-weight: bold; color:#555;",
@@ -609,6 +616,8 @@ fluidPage(
       ),
       
       HTML("<br>"),
+      
+      # Download button
       hidden(
         div(
           id = "download_panel",
