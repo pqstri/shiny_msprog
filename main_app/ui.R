@@ -100,7 +100,19 @@ fluidPage(
     ))),
   
   # Application title
-  titlePanel(title = "MSprog", windowTitle = "MSprog"),
+  # titlePanel(title = "MSprog", windowTitle = "MSprog"),
+  titlePanel(
+    title = tagList(
+      img(
+        src = "logo_R.png",
+        height = "100px",
+        style = "margin-right:10px;"
+      ),
+      "MSprog"
+    ),
+    windowTitle = "MSprog"
+  ),
+  
   
   # Introduction block
   HTML("
