@@ -1356,9 +1356,9 @@
       "Version": "0.2.3",
       "Source": "GitHub",
       "Type": "Package",
-      "Title": "Compute MS Progression from Longitudinal Data",
+      "Title": "Reproducible assessment of disability course in MS",
       "Authors@R": "c( person(\"Noemi\", \"Montobbio\", , \"noemi.montobbio@gmail.com\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0003-0302-393X\")), person(\"Francesca\", \"Bovis\", role = c(\"rev\")), person(\"Luca\", \"Carmisciano\", role = c(\"rev\")))",
-      "Description": "msprog provides tools for exhaustive and reproducible analysis of disability progression in multiple sclerosis (MS) from longitudinal data.",
+      "Description": "msprog provides tools for exhaustive and reproducible analysis of disability course in multiple sclerosis (MS) from longitudinal data",
       "Encoding": "UTF-8",
       "LazyData": "true",
       "Roxygen": "list(markdown = TRUE)",
@@ -1383,7 +1383,7 @@
       "RemoteUsername": "noemimontobbio",
       "RemoteRepo": "msprog",
       "RemoteRef": "master",
-      "RemoteSha": "27abf3c6feb758afd9b6e236a1388dc6e145b772"
+      "RemoteSha": "adf6ea16a09323ac0bed41d28514353f8aca5f80"
     },
     "openssl": {
       "Package": "openssl",

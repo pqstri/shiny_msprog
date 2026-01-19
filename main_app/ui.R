@@ -110,14 +110,15 @@ fluidPage(
       ),
       "MSprog"
     ),
-    windowTitle = "MSprog"
+    windowTitle = "MSprog Web App"
   ),
   
   
   # Introduction block
   HTML("
-  <p>Welcome to the MSprog web app. This page serves as a graphical interface
-  to the main function of the <a href='https://github.com/noemimontobbio/msprog/'><i>msprog</i> R package</a>,
+  <p>Welcome to the MSprog Web App. This page serves as a graphical interface
+  to the <code>MSprog()</code> function, the core component of the 
+  <a href='https://github.com/noemimontobbio/msprog/'><i>msprog</i> R package</a>
   developed by the Biostatistics group at the Health Sciences Department (DISSAL)
   of the University of Genoa (Genoa, Italy).</p>"),
   icon("book"), tags$a(href='https://github.com/noemimontobbio/msprog/blob/master/msprog.pdf',
@@ -132,10 +133,9 @@ fluidPage(
   
   # new section
   # title
-  HTML("<h3>The <code>MSprog</code> function</h3>"),
-  
+  # HTML("<h3>The <code>MSprog</code> function</h3>"),
   # subtitle
-  h4("Extract multiple sclerosis disability events from longitudinal data."),
+  h3("Extract multiple sclerosis disability events from longitudinal data"),
   
   # description of the tool
   HTML("Identify and characterise confirmed disability worsening (CDW) or improvement (CDI) events
@@ -143,7 +143,7 @@ fluidPage(
         The procedure utilizes repeated clinical assessments over time 
         and considers the dates of acute episodes, if provided. 
         Customize results by setting qualitative and quantitative options, and
-        enhance reproducibility.<br><br>
+        enhance reproducibility by reporting the applied settings in your work.<br><br>
        <i>Please input the required information; <span style='color:red;'>mandatory fields are
        marked with an asterisk (*)</span></i><br><br>"
   ),
@@ -605,7 +605,9 @@ fluidPage(
       
       # Criteria
       hidden(
-        h4(id = "criteria_description_title", "Description of criteria")
+        h4(id = "criteria_description_title", "Description of criteria"),
+        h5(id = "criteria_description_subtitle", 
+           "Please report the package version and full settings (or textual description) in your work.")
       ),
       htmlOutput("messages"),
       

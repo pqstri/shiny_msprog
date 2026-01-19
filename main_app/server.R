@@ -315,6 +315,7 @@ function(input, output, session) {
     # make output panels visible
     shinyjs::show(id = "download_panel")
     shinyjs::show(id = "criteria_description_title")
+    shinyjs::show(id = "criteria_description_subtitle")
     shinyjs::show(id = "event_count_title")
     
     conf_tol_days <- suppressWarnings(as.numeric(input$conf_tol_days))
