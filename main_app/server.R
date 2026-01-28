@@ -453,7 +453,7 @@ function(input, output, session) {
   # output$messages <- renderUI({
   #   HTML(paste0(
   #     # display textual description of criteria
-  #     capture.criteria_text(progs()$result)$output, 
+  #     capture.criteria_text(progs()$result, web=T)$output, 
   #     
   #     # of MSprog messages
   #     paste(print(progs()$result), collapse = "</br>"), "</p>"))
@@ -463,7 +463,7 @@ function(input, output, session) {
     tagList(
       div(
         style = "white-space: pre-wrap;",
-        capture.criteria_text(progs()$result)$output
+        capture.criteria_text(progs()$result, web=T)$output
       ),
       
       tags$br(), tags$br(),
