@@ -326,6 +326,12 @@ function(input, output, session) {
     impute_last_visit <- as.numeric(ifelse(input$impute_last_visit == "mix", 
                                            input$impute_prob, input$impute_last_visit))
     
+    if (input$date_format == 'calendar') {
+    date_format <- NULL
+    } else {
+      date_format <- input$date_format
+    }
+    
     # actually compute
     args <- list(
       data = dat(),
@@ -358,6 +364,7 @@ function(input, output, session) {
       relapse_assoc = input$relapse_assoc,
       #relapse_indep (add?)
       impute_last_visit = impute_last_visit,
+      date_format = date_format,
       include_dates = TRUE,
       include_value = TRUE,
       include_stable = TRUE,

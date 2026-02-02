@@ -291,6 +291,19 @@ fluidPage(
         )
       ),
       
+      div(
+        style = "margin:10px; border:1px solid #e3e8e4; padding:20px; border-radius: 5px;",
+        radioButtons(
+        inputId = "date_format",
+        label = "How are visit/relapse dates specified?",
+        choices = c(
+          "Calendar date" = "calendar",
+          "Days (e.g., days from randomisation in clinical trials)" = "day"
+        ),
+        selected = "calendar"
+      )
+      ),
+      
       HTML("<p><i><b>Tip: After uploading your data, use the "),
       icon("eye", id = "eye_outcome"),
       HTML('icon to preview your data in MSprog.
