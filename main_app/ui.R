@@ -128,8 +128,10 @@ fluidPage(
   and repeatable evaluation of disability progression in clinical studies for Multiple Sclerosis</b><br>
      <i>Noemi Montobbio, Luca Carmisciano, Alessio Signori, Marta Ponzano, Irene Schiavetti, Francesca Bovis, Maria Pia Sormani</i><br>
      Mult Scler. 2024;30(9):1185-1192. <b>doi</b>: <a href='https://doi.org/10.1177/13524585241243157'>10.1177/13524585241243157</a>
-  </blockquote><br><br>"
+  </blockquote>"
   ),
+  HTML("For any questions, requests for new features, or bug reporting, please contact: 
+       <b>noemi.montobbio@unige.it</b>. Any feedback is highly appreciated!<br><br>"),
   
   # new section
   # title
