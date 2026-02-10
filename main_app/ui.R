@@ -99,6 +99,19 @@ fluidPage(
       "html{scroll-behavior: smooth;}"
     ))),
   
+  div(
+    class = "alert alert-info",
+    style = "margin: 10px 0;",
+    icon("bullhorn"),
+    tags$strong(" What's new  "),
+    HTML("<br>Support for numeric \"day\" column as a substitute of calendar dates") #,
+    # tags$a(
+    #   href = "https://github.com/noemimontobbio/msprog/blob/master/msprog.pdf",
+    #   target = "_blank",
+    #   "See details"
+    # )
+  ),
+  
   # Application title
   # titlePanel(title = "MSprog", windowTitle = "MSprog"),
   titlePanel(
