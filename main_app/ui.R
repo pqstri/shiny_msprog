@@ -346,7 +346,7 @@ fluidPage(
           Specifically:<ul>
   <li>EDSS: 1.5 if baseline=0; 1.0 if 0 &lt; baseline &le; 5.0; 0.5 if baseline &gt; 5.0 (<a href='https://doi.org/10.1056/nejmoa2415988'>Fox 2025</a>)</li>
   <li>NHPT and T25FW: 20% of baseline (<a href='https://doi.org/10.1177/1352458510370464'>Bosma 2010</a>)</li>
-  <li>SDMT: either 3 points or 10% of baseline (<a href='https://doi.org/10.1177/1352458518808204'>Strober 2018</a>).
+  <li>SDMT: either 4 points or 20% of baseline (<a href='https://doi.org/10.1177/1352458518808204'>Strober 2018</a>).
   </ul></i>"
         )
       ),
