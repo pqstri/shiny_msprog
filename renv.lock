@@ -1353,12 +1353,12 @@
     },
     "msprog": {
       "Package": "msprog",
-      "Version": "0.2.4",
+      "Version": "0.2.5",
       "Source": "GitHub",
       "Type": "Package",
-      "Title": "Reproducible assessment of disability course in MS",
-      "Authors@R": "c( person(\"Noemi\", \"Montobbio\", , \"noemi.montobbio@gmail.com\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0003-0302-393X\")), person(\"Francesca\", \"Bovis\", role = c(\"rev\")), person(\"Luca\", \"Carmisciano\", role = c(\"rev\")))",
-      "Description": "msprog provides tools for exhaustive and reproducible analysis of disability course in multiple sclerosis (MS) from longitudinal data",
+      "Title": "Reproducible Assessment of Disability Course in MS",
+      "Authors@R": "c( person(given=\"Noemi\", family=\"Montobbio\", , email=\"noemi.montobbio@gmail.com\", role=c(\"aut\", \"cre\"), comment=c(ORCID = \"0000-0003-0302-393X\")), person(given=\"Francesca\", family=\"Bovis\", role = c(\"rev\")), person(given=\"Luca\", family=\"Carmisciano\", role = c(\"rev\")))",
+      "Description": "Perform exhaustive and reproducible analysis of disability course in multiple sclerosis (MS) from longitudinal data.",
       "Encoding": "UTF-8",
       "LazyData": "true",
       "Roxygen": "list(markdown = TRUE)",
@@ -1373,7 +1373,9 @@
       "VignetteBuilder": "knitr",
       "Suggests": [
         "knitr",
-        "rmarkdown"
+        "rmarkdown",
+        "xfun",
+        "DT"
       ],
       "License": "MIT + file LICENSE",
       "Author": "Noemi Montobbio [aut, cre] (<https://orcid.org/0000-0003-0302-393X>), Francesca Bovis [rev], Luca Carmisciano [rev]",
@@ -1383,7 +1385,7 @@
       "RemoteUsername": "noemimontobbio",
       "RemoteRepo": "msprog",
       "RemoteRef": "master",
-      "RemoteSha": "d892efa8327e0ce415f314f8af190c7239acefbe"
+      "RemoteSha": "5761075bd0a889b175c966bfdc442019f8f8ba14"
     },
     "openssl": {
       "Package": "openssl",
