@@ -361,7 +361,7 @@ fluidPage(
           choices = c(
             "First CDW" = "firstCDW",
             "First CDI" = "firstCDI",
-            "All events, detected sequentially" = "multiple",
+            "All events, detected sequentially (recommended use of roving baseline, see below)" = "multiple",
             "First progression independent of relapse activity (PIRA)" = "firstPIRA",
             "First relapse-associated worsening (RAW)" = "firstRAW",
             "Only the very first event (CDW or CDI)" = "first"

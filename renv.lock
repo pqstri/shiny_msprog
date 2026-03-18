@@ -1365,7 +1365,8 @@
       "RoxygenNote": "7.3.3",
       "Imports": [
         "stats",
-        "dplyr"
+        "dplyr",
+        "rlang"
       ],
       "Depends": [
         "R (>= 3.5.0)"
@@ -1385,7 +1386,7 @@
       "RemoteUsername": "noemimontobbio",
       "RemoteRepo": "msprog",
       "RemoteRef": "master",
-      "RemoteSha": "5761075bd0a889b175c966bfdc442019f8f8ba14"
+      "RemoteSha": "99f6cdf77be8448542a9a3c0a96d54a957c57c76"
     },
     "openssl": {
       "Package": "openssl",
