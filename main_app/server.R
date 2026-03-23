@@ -389,6 +389,7 @@ function(input, output, session) {
     }
     
     #Sys.sleep(10)
+    
     tryCatch({
       do.call(capture.msprog, args)
     }, error = function(e) {
@@ -399,7 +400,7 @@ function(input, output, session) {
       ))
       return(NULL)
     })
-    
+
   }),
   
   # bind the previous function is to user pressing the compute button.

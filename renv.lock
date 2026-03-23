@@ -1353,7 +1353,7 @@
     },
     "msprog": {
       "Package": "msprog",
-      "Version": "0.2.5",
+      "Version": "0.2.6",
       "Source": "GitHub",
       "Type": "Package",
       "Title": "Reproducible Assessment of Disability Course in MS",
@@ -1386,7 +1386,7 @@
       "RemoteUsername": "noemimontobbio",
       "RemoteRepo": "msprog",
       "RemoteRef": "master",
-      "RemoteSha": "99f6cdf77be8448542a9a3c0a96d54a957c57c76"
+      "RemoteSha": "f837fabfdee7673fff60a21cac4d971498655bc6"
     },
     "openssl": {
       "Package": "openssl",

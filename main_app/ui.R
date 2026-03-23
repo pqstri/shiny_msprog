@@ -104,12 +104,7 @@ fluidPage(
     style = "margin: 10px 0;",
     icon("bullhorn"),
     tags$strong(" What's new  "),
-    HTML("<br>Support for numeric \"day\" column as a substitute for calendar dates") #,
-    # tags$a(
-    #   href = "https://github.com/noemimontobbio/msprog/blob/master/msprog.pdf",
-    #   target = "_blank",
-    #   "See details"
-    # )
+    HTML("<br>Calculation speed-up + confirmation dates/values in output")
   ),
   
   # Application title
