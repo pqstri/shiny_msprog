@@ -1353,12 +1353,12 @@
     },
     "msprog": {
       "Package": "msprog",
-      "Version": "0.2.6",
+      "Version": "1.0.0",
       "Source": "GitHub",
       "Type": "Package",
       "Title": "Reproducible Assessment of Disability Course in MS",
       "Authors@R": "c( person(given=\"Noemi\", family=\"Montobbio\", , email=\"noemi.montobbio@gmail.com\", role=c(\"aut\", \"cre\"), comment=c(ORCID = \"0000-0003-0302-393X\")), person(given=\"Francesca\", family=\"Bovis\", role = c(\"rev\")), person(given=\"Luca\", family=\"Carmisciano\", role = c(\"rev\")))",
-      "Description": "Perform exhaustive and reproducible analysis of disability course in multiple sclerosis (MS) from longitudinal data.",
+      "Description": "Analyse disability course in multiple sclerosis (MS) from longitudinal data following established best practices to promote reproducibility.",
       "Encoding": "UTF-8",
       "LazyData": "true",
       "Roxygen": "list(markdown = TRUE)",
@@ -1369,7 +1369,7 @@
         "rlang"
       ],
       "Depends": [
-        "R (>= 3.5.0)"
+        "R (>= 4.1.0)"
       ],
       "VignetteBuilder": "knitr",
       "Suggests": [
@@ -1386,7 +1386,7 @@
       "RemoteUsername": "noemimontobbio",
       "RemoteRepo": "msprog",
       "RemoteRef": "master",
-      "RemoteSha": "f837fabfdee7673fff60a21cac4d971498655bc6"
+      "RemoteSha": "77a6f9f46cd59186c063886f35f4cac22a74b122"
     },
     "openssl": {
       "Package": "openssl",

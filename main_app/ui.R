@@ -104,7 +104,7 @@ fluidPage(
     style = "margin: 10px 0;",
     icon("bullhorn"),
     tags$strong(" What's new  "),
-    HTML("<br>Calculation speed-up + confirmation dates/values in output")
+    HTML("<br>Calculation speed-up + support for RAW and PIRA customisation")
   ),
   
   # Application title
@@ -362,8 +362,96 @@ fluidPage(
             "Only the very first event (CDW or CDI)" = "first"
           ),
           selected = "firstCDW"
-        )
+        ),
+        
+        ###########
+        # RAW/PIRA
+        ###########
+        
+        HTML("<hr>"),
+        
+        conditionalPanel(
+          condition = "['firstCDW','multiple','first'].includes(input.event)",
+          
+          div(
+            id = "raw_pira_block",
+            
+            checkboxInput(
+              inputId = "RAW_PIRA",
+              label = "Want to further classify CDW into 
+              relapse-associated worsening (RAW) / progression independent
+              of relapse activity (PIRA)?",
+              value = FALSE
+            ),
+            
+            conditionalPanel(
+              condition = "input.RAW_PIRA == true",
+              
+              HTML("<hr>"),
+              
+              h5("RAW definition"),
+              
+              numericInput(
+                inputId = "relapse_assoc",
+                label = "RAW is defined as a CDW whose onset occurs within
+                a specified interval from a previous relapse. Interval 
+                length (in days) can be modified below:",
+                min = 0,
+                max = 731,
+                value = 90,
+                step = 1
+              ),
+              
+              HTML("<hr>"),
+              
+              h5("PIRA definition"),
+              HTML("Define relapse-free intervals around the three checkpoints below."),
+              
+              shinyWidgets::sliderTextInput(
+                inputId = "pira_baseline",
+                label = "Baseline",
+                from_max = 0,
+                to_min = 0,
+                choices = c(seq(-365, 365, 1), "up to event"),
+                selected = c(0, 0),
+                grid = TRUE
+              ),
+              
+              shinyWidgets::sliderTextInput(
+                inputId = "pira_event",
+                label = "Event onset",
+                from_max = 0,
+                to_min = 0,
+                choices = c("back to baseline", seq(-365, 365, 1), "up to confirmation"),
+                selected = c(-90, 30),
+                grid = TRUE
+              ),
+              
+              shinyWidgets::sliderTextInput(
+                inputId = "pira_confirmation",
+                label = "Confirmation",
+                from_max = 0,
+                to_min = 0,
+                choices = c("back to event", seq(-365, 365, 1)),
+                selected = c(-90, 30),
+                grid = TRUE
+              ),
+              
+              HTML(
+                "<i>Note: intervals can be merged by selecting \"up to\" or 
+                \"back from\" options above. <br>
+                If (0, 0) is selected, the checkpoint is ignored. <br>
+                Check textual description of criteria provided in Results to 
+                make sure the desired definition was applied.</i><br>"
+              ),
+            )
+          )
+        ), # end raw_pira_block
+        #######
+        #######
+        
       ),
+
       
       # Baseline ---------------------------------------------------------------
       div(
@@ -402,6 +490,11 @@ fluidPage(
           post = " weeks",
         ),
         
+        HTML(
+          "<i>Note: larger intervals improve the stability of event detection 
+          but are likely to decrease the number of events.</i><br>"
+        ),
+        
         HTML("<hr>"),
         
         shinyWidgets::sliderTextInput(
@@ -420,11 +513,6 @@ fluidPage(
               .irs--shiny .irs-shadow{
                 height: 0px;
               }")),
-        
-        HTML(
-          "<i>Note: larger intervals improve the stability of event detection 
-          but are likely to decrease the number of events.</i><br>"
-        ),
         
       ),
       
@@ -493,18 +581,18 @@ fluidPage(
           ),
           
           HTML("<hr>"),
-          
-          numericInput(
-            "relapse_to_event",
-            "Minimum distance from last relapse (days) to event onset:",
-            min = 0,
-            max = 731,
-            value = 0,
-            step = 30
-          ),
-          
-          HTML("<hr>"),
-          
+
+          # numericInput(
+          #   "relapse_to_event",
+          #   "Minimum distance from last relapse (days) to event onset:",
+          #   min = 0,
+          #   max = 731,
+          #   value = 0,
+          #   step = 30
+          # ),
+          # 
+          # HTML("<hr>"),
+
           numericInput(
             "relapse_to_conf",
             "Minimum distance from last relapse (days) for a visit to be a valid confirmation visit:",
@@ -513,19 +601,6 @@ fluidPage(
             value = 30,
             step = 30
           ),
-          
-          HTML("<hr>"),
-          
-          numericInput(
-            "relapse_assoc",
-            "Relapse-associated worsening (RAW) is defined as a CDW whose onset occurs within
-            a specified interval from a previous relapse. Interval length (in days) can be modified below:",
-            min = 0,
-            max = 365,
-            value = 90,
-            step = 30,
-          ),
-          
           HTML("<hr>"),
           
           # radioButtons(
@@ -562,13 +637,7 @@ fluidPage(
           
           HTML("<hr>"),
           
-          # selectInput(
-          #   "subjects",
-          #   "Subset of subjects to include",
-          #   choices = c("Include all")
-          # ),
-          
-        )
+        ) # end advancedbox
       ),
       
       div(

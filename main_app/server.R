@@ -332,6 +332,24 @@ function(input, output, session) {
       date_format <- input$date_format
     }
     
+    # RAW and PIRA
+    RAW_PIRA <- isTRUE(input$RAW_PIRA)
+    p0 <- -as.numeric(input$pira_baseline[1])
+    p1 <- if (input$pira_baseline[2] == "up to event") NULL else as.numeric(input$pira_baseline[2])
+    e0 <- if (input$pira_event[1] == "back to baseline") NULL else -as.numeric(input$pira_event[1])
+    e1 <- if (input$pira_event[2] == "up to confirmation") NULL else as.numeric(input$pira_event[2])
+    c0 <- if (input$pira_confirmation[1] == "back to event") NULL else -as.numeric(input$pira_confirmation[1])
+    c1 <- as.numeric(input$pira_confirmation[2])
+    # Force paired NULLs
+    if (is.null(p1) || is.null(e0)) {
+      p1 <- NULL
+      e0 <- NULL
+    }
+    if (is.null(e1) || is.null(c0)) {
+      e1 <- NULL
+      c0 <- NULL
+    }
+    
     # actually compute
     args <- list(
       data = dat(),
@@ -347,6 +365,7 @@ function(input, output, session) {
       #delta_fun
       #worsening
       #event: conditionally included
+      RAW_PIRA = RAW_PIRA,
       #baseline: conditionally included
       #proceed_from: conditionally included
       #sub_threshold_rebl
@@ -359,10 +378,10 @@ function(input, output, session) {
       require_sust_days = require_sust_weeks*7,
       #check_intermediate
       relapse_to_bl = input$relapse_to_bl,
-      relapse_to_event = input$relapse_to_event,
+      #relapse_to_event
       relapse_to_conf = input$relapse_to_conf,
-      relapse_assoc = input$relapse_assoc,
-      #relapse_indep (add?)
+      #relapse_assoc: conditionally included
+      #relapse_indep: conditionally included
       impute_last_visit = impute_last_visit,
       date_format = date_format,
       include_dates = TRUE,
@@ -386,6 +405,10 @@ function(input, output, session) {
     }
     if (!is.null(input$validconf_col) && nzchar(input$validconf_col)) {
       args$validconf_col <- input$validconf_col
+    }
+    if (RAW_PIRA) {
+      args$relapse_assoc <- input$relapse_assoc
+      args$relapse_indep <- relapse_indep_from_bounds(p0, p1, e0, e1, c0, c1)
     }
     
     #Sys.sleep(10)
@@ -461,7 +484,7 @@ function(input, output, session) {
   # output$messages <- renderUI({
   #   HTML(paste0(
   #     # display textual description of criteria
-  #     capture.criteria_text(progs()$result, web=T)$output, 
+  #     capture.criteria_text(progs()$result)$output, 
   #     
   #     # of MSprog messages
   #     paste(print(progs()$result), collapse = "</br>"), "</p>"))
@@ -471,7 +494,7 @@ function(input, output, session) {
     tagList(
       div(
         style = "white-space: pre-wrap;",
-        capture.criteria_text(progs()$result, web=T)$output
+        capture.criteria_text(progs()$result)$output
       ),
       
       tags$br(), tags$br(),
