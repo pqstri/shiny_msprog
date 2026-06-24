@@ -126,10 +126,10 @@ fluidPage(
   HTML("
   <p>Welcome to the MSprog Web App. This page serves as a graphical interface
   to the <code>MSprog()</code> function, the core component of the 
-  <a href='https://github.com/noemimontobbio/msprog/'><i>msprog</i> R package</a>
+  <a href='https://cran.r-project.org/package=msprog'><i>msprog</i> R package</a>
   developed by the Biostatistics group at the Health Sciences Department (DISSAL)
   of the University of Genoa (Genoa, Italy).</p>"),
-  icon("book"), tags$a(href='https://github.com/noemimontobbio/msprog/blob/master/msprog.pdf',
+  icon("book"), tags$a(href='https://cran.r-project.org/web/packages/msprog/msprog.pdf',
                        "msprog reference manual"),
   HTML("<br><br><p>If you use the <i>msprog</i> R package or the <i>MSprog</i> web app in your work, please cite:</p>
   <blockquote style='font-size: 1em' cite='https://doi.org/10.1177/13524585241243157'><b>Creating an automated tool for a consistent 
